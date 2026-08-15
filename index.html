@@ -23,31 +23,31 @@
         .game-container {
             background: #0f3460;
             border-radius: 20px;
-            padding: 30px;
+            padding: 25px 30px;
             box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            max-width: 900px;
+            max-width: 800px;
             width: 100%;
         }
         h1 {
             text-align: center;
             color: #ffd700;
-            margin-bottom: 20px;
-            font-size: 28px;
+            margin-bottom: 15px;
+            font-size: 26px;
             letter-spacing: 4px;
         }
         .game-info {
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding: 10px 20px;
+            margin-bottom: 12px;
+            padding: 8px 16px;
             background: rgba(0, 0, 0, 0.3);
-            border-radius: 10px;
+            border-radius: 8px;
             flex-wrap: wrap;
-            gap: 8px;
+            gap: 6px;
         }
         .player-info {
-            font-size: 16px;
+            font-size: 14px;
             font-weight: bold;
         }
         .player-info .active {
@@ -57,106 +57,102 @@
             color: #888;
         }
         .turn-indicator {
-            font-size: 18px;
+            font-size: 16px;
             color: #ffd700;
             animation: blink 1s infinite;
         }
         @keyframes blink {
-            0%,
-            100% {
-                opacity: 1;
-            }
-            50% {
-                opacity: 0.3;
-            }
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
         }
         .board-wrapper {
             position: relative;
-            background: #2a2a4a;
-            padding: 10px;
-            border-radius: 12px;
-            border: 3px solid #4a4a6a;
-            margin-bottom: 15px;
+            background: #1a1a3a;
+            padding: 8px;
+            border-radius: 10px;
+            border: 2px solid #4a4a6a;
+            margin-bottom: 12px;
             overflow-x: auto;
         }
         .board {
             display: grid;
-            grid-template-columns: repeat(6, 1fr);
+            grid-template-columns: repeat(12, 1fr);
             gap: 2px;
-            background: #2a2a4a;
-            min-width: 400px;
-            aspect-ratio: 6 / 7;
+            background: #1a1a3a;
+            min-width: 500px;
+            aspect-ratio: 12 / 5;
         }
         .cell {
             aspect-ratio: 1;
-            background: #3a3a5a;
+            background: #2a2a4a;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-size: 11px;
+            font-size: 9px;
             font-weight: bold;
             cursor: pointer;
             border-radius: 3px;
-            transition: all 0.2s;
+            transition: all 0.15s;
             position: relative;
             user-select: none;
-            min-height: 50px;
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            min-height: 35px;
+            border: 1px solid rgba(255,255,255,0.04);
         }
         .cell:hover:not(.empty) {
-            background: #4a4a7a;
-            transform: scale(1.05);
+            background: #3a3a5a;
+            transform: scale(1.04);
             z-index: 2;
         }
-        /* 行营特殊样式 - 安全区 */
+        /* 行营 - 安全区 */
         .cell.camp {
-            background: #2a4a3a !important;
-            border: 2px solid #4a8a5a;
+            background: #1a3a2a !important;
+            border: 2px solid #3a7a4a;
         }
         .cell.camp::after {
-            content: '🏕️';
+            content: '🏕';
             position: absolute;
-            font-size: 16px;
-            opacity: 0.3;
+            font-size: 12px;
+            opacity: 0.25;
         }
-        /* 大本营特殊样式 */
+        /* 大本营 */
         .cell.base {
-            background: #4a2a2a !important;
-            border: 2px solid #8a4a4a;
+            background: #3a1a1a !important;
+            border: 2px solid #7a3a3a;
         }
         .cell.base::after {
             content: '🏰';
             position: absolute;
-            font-size: 16px;
-            opacity: 0.3;
+            font-size: 12px;
+            opacity: 0.25;
         }
-        /* 铁路线标记 */
+        /* 铁路线视觉标记 */
         .cell.rail-h {
-            border-top: 3px solid #6a6a8a;
-            border-bottom: 3px solid #6a6a8a;
+            border-top: 2px solid #5a5a7a;
+            border-bottom: 2px solid #5a5a7a;
         }
         .cell.rail-v {
-            border-left: 3px solid #6a6a8a;
-            border-right: 3px solid #6a6a8a;
+            border-left: 2px solid #5a5a7a;
+            border-right: 2px solid #5a5a7a;
         }
         .cell.rail-hv {
-            border: 3px solid #6a6a8a;
+            border: 2px solid #5a5a7a;
         }
+        /* 棋子状态 */
         .cell.has-piece {
-            background: #2a4a7a;
+            background: #1a3a6a;
         }
         .cell.selected {
             background: #ffd700 !important;
-            transform: scale(1.1);
+            transform: scale(1.08);
             z-index: 3;
-            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+            box-shadow: 0 0 20px rgba(255,215,0,0.5);
         }
         .cell.can-move {
-            background: rgba(0, 255, 0, 0.3) !important;
+            background: rgba(0,255,0,0.25) !important;
             cursor: pointer;
         }
         .cell.can-attack {
-            background: rgba(255, 0, 0, 0.3) !important;
+            background: rgba(255,0,0,0.25) !important;
             cursor: pointer;
         }
         .cell .piece {
@@ -166,52 +162,33 @@
             flex-direction: column;
             justify-content: center;
             align-items: center;
-            border-radius: 4px;
-            text-shadow: 0 0 3px rgba(0, 0, 0, 0.5);
-            padding: 2px;
-            line-height: 1.2;
+            border-radius: 3px;
+            text-shadow: 0 0 3px rgba(0,0,0,0.6);
+            padding: 1px;
+            line-height: 1.1;
             z-index: 1;
+            font-size: 9px;
         }
         .cell .piece.red {
             color: #ff4444;
-            background: rgba(255, 68, 68, 0.15);
-            border: 2px solid #ff4444;
+            background: rgba(255,68,68,0.12);
+            border: 1.5px solid #ff4444;
         }
         .cell .piece.blue {
             color: #44aaff;
-            background: rgba(68, 170, 255, 0.15);
-            border: 2px solid #44aaff;
+            background: rgba(68,170,255,0.12);
+            border: 1.5px solid #44aaff;
         }
         .cell .piece .rank {
-            font-size: 18px;
+            font-size: 15px;
             font-weight: bold;
         }
         .cell .piece .name {
-            font-size: 9px;
-            opacity: 0.9;
+            font-size: 7px;
+            opacity: 0.85;
         }
         .cell .piece .emoji {
-            font-size: 18px;
-        }
-        .cell .highlight-move {
-            position: absolute;
-            width: 20px;
-            height: 20px;
-            background: rgba(0, 255, 0, 0.5);
-            border-radius: 50%;
-            animation: pulse 1s infinite;
-            z-index: 0;
-        }
-        @keyframes pulse {
-            0%,
-            100% {
-                transform: scale(0.8);
-                opacity: 0.5;
-            }
-            50% {
-                transform: scale(1.2);
-                opacity: 1;
-            }
+            font-size: 14px;
         }
         .controls {
             display: flex;
@@ -220,10 +197,10 @@
             flex-wrap: wrap;
         }
         .controls button {
-            padding: 12px 30px;
+            padding: 10px 24px;
             border: none;
-            border-radius: 10px;
-            font-size: 16px;
+            border-radius: 8px;
+            font-size: 15px;
             font-weight: bold;
             cursor: pointer;
             transition: all 0.3s;
@@ -232,779 +209,680 @@
         }
         .controls button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
-        }
-        .controls button:active {
-            transform: translateY(0);
+            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
         }
         .controls button.reset {
             background: linear-gradient(135deg, #f093fb, #f5576c);
         }
         .controls button.reset:hover {
-            box-shadow: 0 8px 25px rgba(245, 87, 108, 0.4);
+            box-shadow: 0 6px 20px rgba(245,87,108,0.4);
         }
         .message {
             text-align: center;
-            padding: 15px;
-            margin: 10px 0;
-            border-radius: 10px;
-            font-size: 18px;
+            padding: 12px;
+            margin: 8px 0;
+            border-radius: 8px;
+            font-size: 16px;
             font-weight: bold;
-            background: rgba(0, 0, 0, 0.3);
-            min-height: 50px;
+            background: rgba(0,0,0,0.3);
+            min-height: 44px;
         }
-        .message .win-red {
-            color: #ff4444;
-        }
-        .message .win-blue {
-            color: #44aaff;
-        }
+        .message .win-red { color: #ff4444; }
+        .message .win-blue { color: #44aaff; }
         .legend {
             display: flex;
             justify-content: center;
-            gap: 15px;
-            margin: 10px 0;
-            padding: 10px;
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            font-size: 12px;
+            gap: 12px;
+            margin: 8px 0;
+            padding: 8px;
+            background: rgba(0,0,0,0.2);
+            border-radius: 6px;
+            font-size: 11px;
             flex-wrap: wrap;
         }
         .legend-item {
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 4px;
         }
         .legend-color {
-            width: 16px;
-            height: 16px;
-            border-radius: 4px;
+            width: 14px;
+            height: 14px;
+            border-radius: 3px;
         }
-        .legend-color.red {
-            background: #ff4444;
-        }
-        .legend-color.blue {
-            background: #44aaff;
-        }
-        .legend .camp-dot {
-            color: #4a8a5a;
-        }
-        .legend .base-dot {
-            color: #8a4a4a;
-        }
+        .legend-color.red { background: #ff4444; }
+        .legend-color.blue { background: #44aaff; }
         @media (max-width: 700px) {
-            .game-container {
-                padding: 15px;
-            }
-            .cell {
-                min-height: 40px;
-                font-size: 10px;
-            }
-            .cell .piece .rank {
-                font-size: 14px;
-            }
-            .cell .piece .name {
-                font-size: 7px;
-            }
-            .cell .piece .emoji {
-                font-size: 14px;
-            }
-            .game-info {
-                flex-direction: column;
-                gap: 5px;
-                text-align: center;
-            }
-            .controls button {
-                padding: 10px 20px;
-                font-size: 14px;
-            }
-            .board {
-                min-width: 300px;
-            }
+            .game-container { padding: 12px; }
+            .cell { min-height: 28px; font-size: 7px; }
+            .cell .piece .rank { font-size: 11px; }
+            .cell .piece .name { font-size: 6px; }
+            .cell .piece .emoji { font-size: 10px; }
+            .board { min-width: 350px; }
+            .controls button { padding: 8px 16px; font-size: 13px; }
         }
     </style>
 </head>
 <body>
-    <div class="game-container">
-        <h1>⚔️ 军棋 · 经典对决</h1>
-        <div class="legend">
-            <span class="legend-item">
-                <span class="legend-color red"></span> 红方 (先手)
-            </span>
-            <span class="legend-item">
-                <span class="legend-color blue"></span> 蓝方 (后手)
-            </span>
-            <span class="legend-item">⚑ 军旗</span>
-            <span class="legend-item">💣 炸弹</span>
-            <span class="legend-item">⛰️ 地雷</span>
-            <span class="legend-item"><span class="camp-dot">🏕️</span> 行营(安全区)</span>
-            <span class="legend-item"><span class="base-dot">🏰</span> 大本营</span>
-        </div>
-        <div class="game-info">
-            <div class="player-info">
-                红方: <span id="redStatus" class="active">● 当前回合</span>
-            </div>
-            <div class="turn-indicator" id="turnIndicator">🎯 红方走棋</div>
-            <div class="player-info">
-                蓝方: <span id="blueStatus" class="inactive">○ 等待</span>
-            </div>
-        </div>
-        <div class="board-wrapper">
-            <div class="board" id="board"></div>
-        </div>
-        <div class="message" id="message">点击棋子选中，再点击目标移动或攻击</div>
-        <div class="controls">
-            <button class="reset" onclick="resetGame()">🔄 重新开局</button>
-        </div>
+<div class="game-container">
+    <h1>⚔️ 军棋</h1>
+    <div class="legend">
+        <span class="legend-item"><span class="legend-color red"></span>红方</span>
+        <span class="legend-item"><span class="legend-color blue"></span>蓝方</span>
+        <span class="legend-item">⚑军旗</span>
+        <span class="legend-item">💣炸弹</span>
+        <span class="legend-item">⛰地雷</span>
+        <span class="legend-item">🏕行营</span>
+        <span class="legend-item">🏰大本营</span>
     </div>
+    <div class="game-info">
+        <div class="player-info">红方: <span id="redStatus" class="active">● 当前</span></div>
+        <div class="turn-indicator" id="turnIndicator">🎯 红方走棋</div>
+        <div class="player-info">蓝方: <span id="blueStatus" class="inactive">○ 等待</span></div>
+    </div>
+    <div class="board-wrapper"><div class="board" id="board"></div></div>
+    <div class="message" id="message">点击棋子选中，再点击目标移动或攻击</div>
+    <div class="controls">
+        <button class="reset" onclick="resetGame()">🔄 重新开局</button>
+    </div>
+</div>
 
-    <script>
-        // ================================================================
-        // 军棋核心逻辑 - 真实棋盘版 (铁路/公路/行营/大本营)
-        // ================================================================
+<script>
+// ================================================================
+// 军棋核心 - 基于真实棋盘规格 (12行 x 5列)
+// 数据来源: 军棋标准规则[citation:1][citation:10]
+// ================================================================
 
-        // -------- 棋子等级定义 --------
-        const RANKS = {
-            COMMANDER: 9,
-            GENERAL: 8,
-            CAPTAIN: 7,
-            COLONEL: 6,
-            MAJOR: 5,
-            LIEUTENANT: 4,
-            SERGEANT: 3,
-            CORPORAL: 2,
-            PRIVATE: 1,
-            BOMB: 0,
-            MINE: -1,
-            FLAG: -2
-        };
+// -------- 棋子等级定义 (数字越大等级越高) --------
+// 参考: 司令>军长>师长>旅长>团长>营长>连长>排长>工兵[citation:1][citation:6]
+const RANKS = {
+    COMMANDER: 9,  // 司令
+    GENERAL: 8,    // 军长
+    CAPTAIN: 7,    // 师长
+    COLONEL: 6,    // 旅长
+    MAJOR: 5,      // 团长
+    LIEUTENANT: 4, // 营长
+    SERGEANT: 3,   // 连长
+    CORPORAL: 2,   // 排长
+    PRIVATE: 1,    // 工兵
+    BOMB: 0,       // 炸弹
+    MINE: -1,      // 地雷
+    FLAG: -2       // 军旗
+};
 
-        const RANK_NAMES = {
-            9: '司令',
-            8: '军长',
-            7: '师长',
-            6: '旅长',
-            5: '团长',
-            4: '营长',
-            3: '连长',
-            2: '排长',
-            1: '工兵',
-            0: '💣',
-            '-1': '⛰️',
-            '-2': '⚑'
-        };
+const RANK_NAMES = {
+    9: '司令', 8: '军长', 7: '师长', 6: '旅长', 5: '团长',
+    4: '营长', 3: '连长', 2: '排长', 1: '工兵',
+    0: '💣', '-1': '⛰', '-2': '⚑'
+};
+const RANK_EMOJIS = {
+    9: '🎖', 8: '⭐', 7: '🌟', 6: '✨', 5: '💫',
+    4: '🌟', 3: '⭐', 2: '✨', 1: '🔧',
+    0: '💣', '-1': '⛰', '-2': '⚑'
+};
 
-        const RANK_EMOJIS = {
-            9: '🎖️',
-            8: '⭐',
-            7: '🌟',
-            6: '✨',
-            5: '💫',
-            4: '🌟',
-            3: '⭐',
-            2: '✨',
-            1: '🔧',
-            0: '💣',
-            '-1': '⛰️',
-            '-2': '⚑'
-        };
+// -------- 棋子配置 (每方25枚) [citation:1][citation:6] --------
+// 司令、军长、军旗各1；师长、旅长、团长、营长、炸弹各2；连长、排长、工兵、地雷各3
+const PIECE_CONFIG = [
+    { type: 'COMMANDER', count: 1 },
+    { type: 'GENERAL', count: 1 },
+    { type: 'FLAG', count: 1 },
+    { type: 'CAPTAIN', count: 2 },
+    { type: 'COLONEL', count: 2 },
+    { type: 'MAJOR', count: 2 },
+    { type: 'LIEUTENANT', count: 2 },
+    { type: 'BOMB', count: 2 },
+    { type: 'SERGEANT', count: 3 },
+    { type: 'CORPORAL', count: 3 },
+    { type: 'PRIVATE', count: 3 },
+    { type: 'MINE', count: 3 }
+];
 
-        // -------- 棋盘地图数据 --------
-        // 6行 x 6列 (行索引0-5, 列索引0-5)
-        // 属性: camp=行营, base=大本营, railH=水平铁路, railV=垂直铁路
-
-        const MAP = {
-            // 行0: 蓝方底线
-            row0: [
-                { type: 'normal', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: true, railV: false },
-                { type: 'normal', railH: true, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: false, railV: false }
-            ],
-            // 行1: 蓝方二线
-            row1: [
-                { type: 'normal', railH: false, railV: false },
-                { type: 'camp', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'camp', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: false }
-            ],
-            // 行2: 中间锋线
-            row2: [
-                { type: 'normal', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'base', railH: false, railV: false },
-                { type: 'base', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: false, railV: false }
-            ],
-            // 行3: 中间锋线
-            row3: [
-                { type: 'normal', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'camp', railH: false, railV: false },
-                { type: 'camp', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: false, railV: false }
-            ],
-            // 行4: 红方二线
-            row4: [
-                { type: 'normal', railH: false, railV: false },
-                { type: 'camp', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'camp', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: false }
-            ],
-            // 行5: 红方底线
-            row5: [
-                { type: 'normal', railH: false, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: true, railV: false },
-                { type: 'normal', railH: true, railV: false },
-                { type: 'normal', railH: false, railV: true },
-                { type: 'normal', railH: false, railV: false }
-            ]
-        };
-
-        // 补充铁路连接: 行1-4的列2和列3之间是铁路
-        // 通过单元格的 railH 属性控制
-
-        // -------- 初始布局 (真实军棋标准布局) --------
-        // 红方: 行4-5 (下方), 蓝方: 行0-1 (上方)
-        // 军旗放在大本营 (行2/行3 的列2/列3)
-        // 地雷只能放最后两行 (行0-1 或 行4-5)
-
-        const INIT_LAYOUT = {
-            // 蓝方 (上方, 行0-1)
-            blue: [
-                // 行0: 底线 (从左到右)
-                ['MINE', 'GENERAL', 'COMMANDER', 'CAPTAIN', 'COLONEL', 'MINE'],
-                // 行1: 二线
-                ['MAJOR', 'LIEUTENANT', 'SERGEANT', 'CORPORAL', 'PRIVATE', 'BOMB']
-            ],
-            // 红方 (下方, 行4-5)
-            red: [
-                // 行4: 二线
-                ['BOMB', 'PRIVATE', 'CORPORAL', 'SERGEANT', 'LIEUTENANT', 'MAJOR'],
-                // 行5: 底线 (从左到右)
-                ['MINE', 'COLONEL', 'CAPTAIN', 'COMMANDER', 'GENERAL', 'MINE']
-            ]
-        };
-
-        // 军旗和额外地雷放在大本营位置
-        // 大本营位置: (2,2) 红方军旗, (2,3) 红方地雷, (3,2) 蓝方地雷, (3,3) 蓝方军旗
-        const FLAG_MINES = {
-            // 大本营 (行2, 行3)
-            '2,2': { rank: RANKS.FLAG, player: 'red', type: 'FLAG' },
-            '2,3': { rank: RANKS.MINE, player: 'red', type: 'MINE' },
-            '3,2': { rank: RANKS.MINE, player: 'blue', type: 'MINE' },
-            '3,3': { rank: RANKS.FLAG, player: 'blue', type: 'FLAG' }
-        };
-
-        // 棋子类型映射
-        const RANK_MAP = {
-            'FLAG': RANKS.FLAG,
-            'MINE': RANKS.MINE,
-            'BOMB': RANKS.BOMB,
-            'COMMANDER': RANKS.COMMANDER,
-            'GENERAL': RANKS.GENERAL,
-            'CAPTAIN': RANKS.CAPTAIN,
-            'COLONEL': RANKS.COLONEL,
-            'MAJOR': RANKS.MAJOR,
-            'LIEUTENANT': RANKS.LIEUTENANT,
-            'SERGEANT': RANKS.SERGEANT,
-            'CORPORAL': RANKS.CORPORAL,
-            'PRIVATE': RANKS.PRIVATE
-        };
-
-        // -------- 游戏状态 --------
-        let board = []; // 6x6 数组, 每格: { rank, player, type } 或 null
-        let currentPlayer = 'red';
-        let selectedPos = null;
-        let gameOver = false;
-        let moveHistory = [];
-
-        // DOM 引用
-        const boardEl = document.getElementById('board');
-        const messageEl = document.getElementById('message');
-        const redStatusEl = document.getElementById('redStatus');
-        const blueStatusEl = document.getElementById('blueStatus');
-        const turnIndicatorEl = document.getElementById('turnIndicator');
-
-        // -------- 初始化棋盘 --------
-        function initBoard() {
-            board = [];
-            for (let r = 0; r < 6; r++) {
-                board[r] = [];
-                for (let c = 0; c < 6; c++) {
-                    board[r][c] = null;
-                }
-            }
-
-            // 放置蓝方 (行0-1)
-            for (let r = 0; r < 2; r++) {
-                for (let c = 0; c < 6; c++) {
-                    const key = INIT_LAYOUT.blue[r][c];
-                    board[r][c] = {
-                        rank: RANK_MAP[key],
-                        player: 'blue',
-                        type: key
-                    };
-                }
-            }
-
-            // 放置红方 (行4-5)
-            for (let r = 0; r < 2; r++) {
-                for (let c = 0; c < 6; c++) {
-                    const key = INIT_LAYOUT.red[r][c];
-                    board[4 + r][c] = {
-                        rank: RANK_MAP[key],
-                        player: 'red',
-                        type: key
-                    };
-                }
-            }
-
-            // 放置大本营 (军旗和地雷)
-            for (const [key, piece] of Object.entries(FLAG_MINES)) {
-                const [r, c] = key.split(',').map(Number);
-                board[r][c] = piece;
-            }
-
-            currentPlayer = 'red';
-            selectedPos = null;
-            gameOver = false;
-            moveHistory = [];
-            updateStatus();
+function buildPieceList(player) {
+    const list = [];
+    for (const cfg of PIECE_CONFIG) {
+        for (let i = 0; i < cfg.count; i++) {
+            list.push({ rank: RANKS[cfg.type], player, type: cfg.type });
         }
+    }
+    return list;
+}
 
-        // -------- 获取单元格属性 --------
-        function getCellType(row, col) {
-            const rows = ['row0', 'row1', 'row2', 'row3', 'row4', 'row5'];
-            const cell = MAP[rows[row]][col];
-            return cell;
+// -------- 棋盘地图 (12行 x 5列) --------
+// 行0-5: 蓝方区域, 行6-11: 红方区域
+// 列0-4: 从左到右
+// 属性: camp=行营, base=大本营, railH=水平铁路, railV=垂直铁路
+
+function createMap() {
+    const map = [];
+    for (let r = 0; r < 12; r++) {
+        map[r] = [];
+        for (let c = 0; c < 5; c++) {
+            map[r][c] = { type: 'normal', railH: false, railV: false };
         }
+    }
 
-        function isCamp(row, col) {
-            return getCellType(row, col).type === 'camp';
+    // ----- 行营 (每方5个) [citation:1] -----
+    // 蓝方行营: (1,1), (1,3), (4,2), (2,0), (2,4)
+    const camps = [
+        [1,1], [1,3], [4,2], [2,0], [2,4],
+        [7,1], [7,3], [10,2], [9,0], [9,4]
+    ];
+    for (const [r,c] of camps) {
+        if (r >= 0 && r < 12 && c >= 0 && c < 5) {
+            map[r][c].type = 'camp';
         }
+    }
 
-        function isBase(row, col) {
-            return getCellType(row, col).type === 'base';
+    // ----- 大本营 (每方2个) [citation:1] -----
+    // 蓝方: (0,2), (0,4)  红方: (11,2), (11,0)
+    const bases = [[0,2], [0,4], [11,2], [11,0]];
+    for (const [r,c] of bases) {
+        if (r >= 0 && r < 12 && c >= 0 && c < 5) {
+            map[r][c].type = 'base';
         }
+    }
 
-        function hasRailH(row, col) {
-            return getCellType(row, col).railH === true;
-        }
+    // ----- 铁路线 (粗黑线) [citation:1][citation:3] -----
+    // 所有行营和大本营不设铁路
+    const isSpecial = (r,c) => {
+        for (const [sr,sc] of camps) if (sr===r && sc===c) return true;
+        for (const [sr,sc] of bases) if (sr===r && sc===c) return true;
+        return false;
+    };
 
-        function hasRailV(row, col) {
-            return getCellType(row, col).railV === true;
-        }
-
-        function isOnRail(row, col) {
-            return hasRailH(row, col) || hasRailV(row, col);
-        }
-
-        // -------- 获取棋子显示名 --------
-        function getPieceDisplay(piece) {
-            if (!piece) return '';
-            const rank = piece.rank;
-            const name = RANK_NAMES[rank] || '';
-            const emoji = RANK_EMOJIS[rank] || '';
-            return `${emoji} ${name}`;
-        }
-
-        // -------- 铁路走法检测 (直线任意距离) --------
-        function canMoveOnRail(fromRow, fromCol, toRow, toCol) {
-            // 必须是同一直线 (行相同或列相同)
-            if (fromRow !== toRow && fromCol !== toCol) return false;
-
-            const piece = board[fromRow][fromCol];
-            const isEngineer = piece && piece.type === 'PRIVATE';
-
-            // 工兵特殊: 可以在铁路上任意行走 (包括拐弯, 简化版暂只支持直线)
-            // 检查路径上是否有阻碍
-            if (fromRow === toRow) {
-                // 水平方向
-                const minCol = Math.min(fromCol, toCol);
-                const maxCol = Math.max(fromCol, toCol);
-                for (let c = minCol + 1; c < maxCol; c++) {
-                    if (board[fromRow][c] !== null) return false;
-                    // 检查路径是否都在铁路上
-                    if (!hasRailH(fromRow, c)) return false;
-                }
-                // 起点和终点必须在铁路上
-                return hasRailH(fromRow, fromCol) && hasRailH(fromRow, toCol);
-            } else {
-                // 垂直方向
-                const minRow = Math.min(fromRow, toRow);
-                const maxRow = Math.max(fromRow, toRow);
-                for (let r = minRow + 1; r < maxRow; r++) {
-                    if (board[r][fromCol] !== null) return false;
-                    if (!hasRailV(r, fromCol)) return false;
-                }
-                return hasRailV(fromRow, fromCol) && hasRailV(toRow, toCol);
+    // 水平铁路: 每行除特殊格外的所有格
+    for (let r = 0; r < 12; r++) {
+        for (let c = 0; c < 5; c++) {
+            if (!isSpecial(r,c)) {
+                map[r][c].railH = true;
+                map[r][c].railV = true;
             }
         }
+    }
 
-        // -------- 走法校验 --------
-        function isValidMove(fromRow, fromCol, toRow, toCol) {
-            const piece = board[fromRow][fromCol];
-            if (!piece) return false;
+    // 部分格子调整: 确保铁路线符合标准棋盘
+    // 具体调整参照标准军棋棋盘[citation:10]
+    // 简化版: 所有普通格都有铁路
 
-            // 不能走到同一个位置
-            if (fromRow === toRow && fromCol === toCol) return false;
+    return map;
+}
 
-            // 目标格有己方棋子
-            const target = board[toRow][toCol];
-            if (target && target.player === piece.player) return false;
+const MAP = createMap();
 
-            // 大本营中的棋子不能移动 (军旗和地雷)
-            if (isBase(fromRow, fromCol)) {
-                // 如果棋子在大本营, 不能移动 (军旗/地雷/或其他进入大本营的棋子)
-                return false;
-            }
+// -------- 辅助函数 --------
+function isCamp(row, col) {
+    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
+    return MAP[row][col].type === 'camp';
+}
+function isBase(row, col) {
+    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
+    return MAP[row][col].type === 'base';
+}
+function hasRailH(row, col) {
+    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
+    return MAP[row][col].railH;
+}
+function hasRailV(row, col) {
+    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
+    return MAP[row][col].railV;
+}
+function isOnRail(row, col) {
+    return hasRailH(row, col) || hasRailV(row, col);
+}
 
-            // 军旗不能移动 (保险)
-            if (piece.type === 'FLAG') return false;
+// -------- 游戏状态 --------
+let board = [];  // 12x5 数组
+let currentPlayer = 'red';
+let selectedPos = null;
+let gameOver = false;
 
-            // 地雷不能移动
-            if (piece.type === 'MINE') return false;
+// DOM 引用
+const boardEl = document.getElementById('board');
+const messageEl = document.getElementById('message');
+const redStatusEl = document.getElementById('redStatus');
+const blueStatusEl = document.getElementById('blueStatus');
+const turnIndicatorEl = document.getElementById('turnIndicator');
 
-            // 行营中的棋子不能主动移动 (进入行营后必须原地不动)
-            // 但实际上行营中的棋子可以移动, 但防守方不能攻击行营中的棋子
-            // 行营中的棋子可以主动出来
-
-            // 走法检测: 铁路 或 相邻
-            const isAdjacent = Math.abs(fromRow - toRow) + Math.abs(fromCol - toCol) === 1;
-
-            // 如果在铁路上, 可以走任意距离
-            if (isOnRail(fromRow, fromCol) && isOnRail(toRow, toCol)) {
-                if (canMoveOnRail(fromRow, fromCol, toRow, toCol)) {
-                    return true;
-                }
-            }
-
-            // 相邻走法 (公路线 或 铁路相邻)
-            if (isAdjacent) {
-                // 检查目标是否是行营, 如果是, 任何棋子都可以进入
-                // 行营是安全区, 攻击方不能攻击行营中的棋子
-                return true;
-            }
-
-            return false;
+// -------- 初始化棋盘 --------
+function initBoard() {
+    board = [];
+    for (let r = 0; r < 12; r++) {
+        board[r] = [];
+        for (let c = 0; c < 5; c++) {
+            board[r][c] = null;
         }
+    }
 
-        // -------- 吃子裁决 --------
-        function resolveAttack(attacker, defender) {
-            // 如果目标为空, 直接移动
-            if (!defender) return { result: 'move', winner: null };
+    // 蓝方区域: 行0-5, 列0-4
+    // 红方区域: 行6-11, 列0-4
+    // 按标准布局: 大本营放军旗和地雷
+    const bluePieces = buildPieceList('blue');
+    const redPieces = buildPieceList('red');
 
-            // 攻击方是炸弹
-            if (attacker.rank === RANKS.BOMB) {
-                return { result: 'attack', winner: null };
-            }
+    // 简单布局: 随机分配 (保证规则: 军旗在大本营, 地雷在后两排, 炸弹不在第一排)
+    // 为简化演示, 使用固定布局
+    
+    // 蓝方 (行0-5)
+    // 行0: 底线 (大本营在0,2和0,4)
+    board[0][0] = { rank: RANKS.MINE, player: 'blue', type: 'MINE' };
+    board[0][1] = { rank: RANKS.GENERAL, player: 'blue', type: 'GENERAL' };
+    board[0][2] = { rank: RANKS.FLAG, player: 'blue', type: 'FLAG' };  // 军旗
+    board[0][3] = { rank: RANKS.CAPTAIN, player: 'blue', type: 'CAPTAIN' };
+    board[0][4] = { rank: RANKS.MINE, player: 'blue', type: 'MINE' };
+    
+    board[1][0] = { rank: RANKS.MINE, player: 'blue', type: 'MINE' };
+    board[1][1] = null; // 行营
+    board[1][2] = { rank: RANKS.COMMANDER, player: 'blue', type: 'COMMANDER' };
+    board[1][3] = null; // 行营
+    board[1][4] = { rank: RANKS.COLONEL, player: 'blue', type: 'COLONEL' };
+    
+    board[2][0] = null; // 行营
+    board[2][1] = { rank: RANKS.MAJOR, player: 'blue', type: 'MAJOR' };
+    board[2][2] = { rank: RANKS.LIEUTENANT, player: 'blue', type: 'LIEUTENANT' };
+    board[2][3] = { rank: RANKS.SERGEANT, player: 'blue', type: 'SERGEANT' };
+    board[2][4] = null; // 行营
+    
+    board[3][0] = { rank: RANKS.CORPORAL, player: 'blue', type: 'CORPORAL' };
+    board[3][1] = { rank: RANKS.PRIVATE, player: 'blue', type: 'PRIVATE' };
+    board[3][2] = { rank: RANKS.BOMB, player: 'blue', type: 'BOMB' };
+    board[3][3] = { rank: RANKS.BOMB, player: 'blue', type: 'BOMB' };
+    board[3][4] = { rank: RANKS.PRIVATE, player: 'blue', type: 'PRIVATE' };
+    
+    board[4][0] = { rank: RANKS.CORPORAL, player: 'blue', type: 'CORPORAL' };
+    board[4][1] = { rank: RANKS.SERGEANT, player: 'blue', type: 'SERGEANT' };
+    board[4][2] = null; // 行营
+    board[4][3] = { rank: RANKS.LIEUTENANT, player: 'blue', type: 'LIEUTENANT' };
+    board[4][4] = { rank: RANKS.MAJOR, player: 'blue', type: 'MAJOR' };
+    
+    board[5][0] = { rank: RANKS.PRIVATE, player: 'blue', type: 'PRIVATE' };
+    board[5][1] = { rank: RANKS.CORPORAL, player: 'blue', type: 'CORPORAL' };
+    board[5][2] = { rank: RANKS.GENERAL, player: 'blue', type: 'GENERAL' };
+    board[5][3] = { rank: RANKS.COMMANDER, player: 'blue', type: 'COMMANDER' };
+    board[5][4] = { rank: RANKS.COLONEL, player: 'blue', type: 'COLONEL' };
 
-            // 防御方是炸弹
-            if (defender.rank === RANKS.BOMB) {
-                return { result: 'attack', winner: null };
-            }
+    // 红方 (行6-11)
+    board[6][0] = { rank: RANKS.COLONEL, player: 'red', type: 'COLONEL' };
+    board[6][1] = { rank: RANKS.COMMANDER, player: 'red', type: 'COMMANDER' };
+    board[6][2] = { rank: RANKS.GENERAL, player: 'red', type: 'GENERAL' };
+    board[6][3] = { rank: RANKS.CORPORAL, player: 'red', type: 'CORPORAL' };
+    board[6][4] = { rank: RANKS.PRIVATE, player: 'red', type: 'PRIVATE' };
+    
+    board[7][0] = { rank: RANKS.MAJOR, player: 'red', type: 'MAJOR' };
+    board[7][1] = null; // 行营
+    board[7][2] = { rank: RANKS.LIEUTENANT, player: 'red', type: 'LIEUTENANT' };
+    board[7][3] = null; // 行营
+    board[7][4] = { rank: RANKS.SERGEANT, player: 'red', type: 'SERGEANT' };
+    
+    board[8][0] = { rank: RANKS.BOMB, player: 'red', type: 'BOMB' };
+    board[8][1] = { rank: RANKS.BOMB, player: 'red', type: 'BOMB' };
+    board[8][2] = { rank: RANKS.PRIVATE, player: 'red', type: 'PRIVATE' };
+    board[8][3] = { rank: RANKS.CORPORAL, player: 'red', type: 'CORPORAL' };
+    board[8][4] = { rank: RANKS.PRIVATE, player: 'red', type: 'PRIVATE' };
+    
+    board[9][0] = null; // 行营
+    board[9][1] = { rank: RANKS.SERGEANT, player: 'red', type: 'SERGEANT' };
+    board[9][2] = { rank: RANKS.LIEUTENANT, player: 'red', type: 'LIEUTENANT' };
+    board[9][3] = { rank: RANKS.MAJOR, player: 'red', type: 'MAJOR' };
+    board[9][4] = null; // 行营
+    
+    board[10][0] = { rank: RANKS.COLONEL, player: 'red', type: 'COLONEL' };
+    board[10][1] = { rank: RANKS.MINE, player: 'red', type: 'MINE' };
+    board[10][2] = null; // 行营
+    board[10][3] = { rank: RANKS.CAPTAIN, player: 'red', type: 'CAPTAIN' };
+    board[10][4] = { rank: RANKS.GENERAL, player: 'red', type: 'GENERAL' };
+    
+    board[11][0] = { rank: RANKS.MINE, player: 'red', type: 'MINE' };
+    board[11][1] = { rank: RANKS.MINE, player: 'red', type: 'MINE' };
+    board[11][2] = { rank: RANKS.FLAG, player: 'red', type: 'FLAG' };  // 军旗
+    board[11][3] = { rank: RANKS.COMMANDER, player: 'red', type: 'COMMANDER' };
+    board[11][4] = { rank: RANKS.CAPTAIN, player: 'red', type: 'CAPTAIN' };
 
-            // 防御方是军旗
-            if (defender.type === 'FLAG') {
-                return { result: 'attack', winner: 'attacker' };
-            }
+    currentPlayer = 'red';
+    selectedPos = null;
+    gameOver = false;
+    updateStatus();
+}
 
-            // 防御方是地雷
-            if (defender.type === 'MINE') {
-                // 工兵可以排雷
-                if (attacker.type === 'PRIVATE') {
-                    return { result: 'attack', winner: 'attacker' };
-                }
-                return { result: 'attack', winner: 'defender' };
-            }
+// -------- 获取棋子显示名 --------
+function getPieceDisplay(piece) {
+    if (!piece) return '';
+    const rank = piece.rank;
+    const name = RANK_NAMES[rank] || '';
+    const emoji = RANK_EMOJIS[rank] || '';
+    return `${emoji}${name}`;
+}
 
-            // 常规等级比较
-            if (attacker.rank > defender.rank) {
-                return { result: 'attack', winner: 'attacker' };
-            } else if (attacker.rank < defender.rank) {
-                return { result: 'attack', winner: 'defender' };
-            } else {
-                return { result: 'attack', winner: null };
-            }
+// -------- 铁路走法检测 [citation:1][citation:3] --------
+// 工兵可在铁路上任意行走并可转弯，其它棋子只能直走[citation:1][citation:6]
+function canMoveOnRail(fromR, fromC, toR, toC) {
+    const piece = board[fromR][fromC];
+    if (!piece) return false;
+    const isEngineer = piece.type === 'PRIVATE';
+
+    // 必须同在铁路上
+    if (!isOnRail(fromR, fromC) || !isOnRail(toR, toC)) return false;
+
+    // 工兵: 可在铁路上任意行走 (BFS检测连通)
+    if (isEngineer) {
+        return hasRailPath(fromR, fromC, toR, toC);
+    }
+
+    // 其它棋子: 只能直线走
+    if (fromR !== toR && fromC !== toC) return false;
+
+    if (fromR === toR) {
+        // 水平方向: 检查路径上是否有阻挡
+        const minC = Math.min(fromC, toC);
+        const maxC = Math.max(fromC, toC);
+        for (let c = minC + 1; c < maxC; c++) {
+            if (board[fromR][c] !== null) return false;
+            if (!hasRailH(fromR, c)) return false;
         }
-
-        // -------- 执行走棋 --------
-        function executeMove(fromRow, fromCol, toRow, toCol) {
-            if (gameOver) return false;
-
-            const piece = board[fromRow][fromCol];
-            const target = board[toRow][toCol];
-
-            // 检查走法有效性
-            if (!isValidMove(fromRow, fromCol, toRow, toCol)) {
-                messageEl.textContent = '❌ 无效走法! 请检查铁路/公路规则';
-                return false;
-            }
-
-            // 检查是否攻击行营中的棋子 (行营安全区)
-            if (target && isCamp(toRow, toCol)) {
-                messageEl.textContent = '❌ 行营是安全区, 不能攻击里面的棋子';
-                return false;
-            }
-
-            // 解析攻击
-            const result = resolveAttack(piece, target);
-
-            let moveMsg = '';
-
-            if (result.result === 'move') {
-                board[toRow][toCol] = piece;
-                board[fromRow][fromCol] = null;
-                moveMsg = `✅ ${getPieceDisplay(piece)} 移动到 (${String.fromCharCode(65+toCol)}${toRow+1})`;
-            } else {
-                const attackerName = getPieceDisplay(piece);
-                const defenderName = target ? getPieceDisplay(target) : '空';
-
-                if (result.winner === null) {
-                    board[fromRow][fromCol] = null;
-                    board[toRow][toCol] = null;
-                    moveMsg = `💥 ${attackerName} 与 ${defenderName} 同归于尽!`;
-                } else if (result.winner === 'attacker') {
-                    board[toRow][toCol] = piece;
-                    board[fromRow][fromCol] = null;
-                    moveMsg = `⚔️ ${attackerName} 消灭了 ${defenderName}!`;
-
-                    if (target && target.type === 'FLAG') {
-                        gameOver = true;
-                        const winner = piece.player === 'red' ? '红方' : '蓝方';
-                        messageEl.innerHTML = `🎉 <span class="win-${piece.player}">${winner}</span> 夺取军旗, 获得胜利! 🎉`;
-                        updateStatus();
-                        renderBoard();
-                        return true;
-                    }
-                } else {
-                    board[fromRow][fromCol] = null;
-                    moveMsg = `💀 ${attackerName} 攻击失败, 被 ${defenderName} 消灭!`;
-                }
-            }
-
-            // 检查胜利条件: 消灭所有可移动棋子
-            if (!gameOver) {
-                const redAlive = countAlive('red');
-                const blueAlive = countAlive('blue');
-                if (redAlive === 0) {
-                    gameOver = true;
-                    messageEl.innerHTML = '🎉 <span class="win-blue">蓝方</span> 消灭所有红方棋子, 获得胜利! 🎉';
-                } else if (blueAlive === 0) {
-                    gameOver = true;
-                    messageEl.innerHTML = '🎉 <span class="win-red">红方</span> 消灭所有蓝方棋子, 获得胜利! 🎉';
-                }
-            }
-
-            if (!gameOver) {
-                currentPlayer = (currentPlayer === 'red' ? 'blue' : 'red');
-                messageEl.textContent = moveMsg;
-            }
-
-            selectedPos = null;
-            updateStatus();
-            renderBoard();
-            return true;
+        return hasRailH(fromR, fromC) && hasRailH(fromR, toC);
+    } else {
+        const minR = Math.min(fromR, toR);
+        const maxR = Math.max(fromR, toR);
+        for (let r = minR + 1; r < maxR; r++) {
+            if (board[r][fromC] !== null) return false;
+            if (!hasRailV(r, fromC)) return false;
         }
+        return hasRailV(fromR, fromC) && hasRailV(toR, toC);
+    }
+}
 
-        // -------- 统计存活棋子 (排除军旗) --------
-        function countAlive(player) {
-            let count = 0;
-            for (let r = 0; r < 6; r++) {
-                for (let c = 0; c < 6; c++) {
-                    const p = board[r][c];
-                    if (p && p.player === player && p.type !== 'FLAG') {
-                        count++;
-                    }
-                }
-            }
-            return count;
+// -------- 工兵铁路BFS连通检测 --------
+function hasRailPath(fromR, fromC, toR, toC) {
+    const visited = new Set();
+    const queue = [[fromR, fromC]];
+    visited.add(`${fromR},${fromC}`);
+
+    while (queue.length > 0) {
+        const [r, c] = queue.shift();
+        if (r === toR && c === toC) return true;
+
+        // 四方向
+        const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
+        for (const [dr, dc] of dirs) {
+            const nr = r + dr, nc = c + dc;
+            const key = `${nr},${nc}`;
+            if (nr < 0 || nr >= 12 || nc < 0 || nc >= 5) continue;
+            if (visited.has(key)) continue;
+            if (!isOnRail(nr, nc)) continue;
+            // 检查路径是否被阻挡 (中间格子不能有棋子)
+            // BFS跳过有棋子的格子 (但终点可以)
+            if (board[nr][nc] !== null && (nr !== toR || nc !== toC)) continue;
+            visited.add(key);
+            queue.push([nr, nc]);
         }
+    }
+    return false;
+}
 
-        // -------- 更新状态显示 --------
-        function updateStatus() {
-            const isRedTurn = currentPlayer === 'red' && !gameOver;
-            const isBlueTurn = currentPlayer === 'blue' && !gameOver;
+// -------- 走法校验 --------
+function isValidMove(fromR, fromC, toR, toC) {
+    const piece = board[fromR][fromC];
+    if (!piece) return false;
+    if (fromR === toR && fromC === toC) return false;
 
-            redStatusEl.textContent = isRedTurn ? '● 当前回合' : '○ 等待';
-            redStatusEl.className = isRedTurn ? 'active' : 'inactive';
-            blueStatusEl.textContent = isBlueTurn ? '● 当前回合' : '○ 等待';
-            blueStatusEl.className = isBlueTurn ? 'active' : 'inactive';
+    const target = board[toR][toC];
+    if (target && target.player === piece.player) return false;
 
-            if (gameOver) {
-                turnIndicatorEl.textContent = '🏁 游戏结束';
-            } else {
-                turnIndicatorEl.textContent = `🎯 ${currentPlayer === 'red' ? '红方' : '蓝方'}走棋`;
-            }
+    // 军旗和地雷不可移动[citation:1][citation:10]
+    if (piece.type === 'FLAG' || piece.type === 'MINE') return false;
+    // 大本营中的棋子不可移动[citation:1][citation:10]
+    if (isBase(fromR, fromC)) return false;
+
+    // 检测铁路走法
+    if (isOnRail(fromR, fromC) && isOnRail(toR, toC)) {
+        if (canMoveOnRail(fromR, fromC, toR, toC)) return true;
+    }
+
+    // 相邻走法 (公路线 或 铁路相邻)[citation:1][citation:3]
+    const dist = Math.abs(fromR - toR) + Math.abs(fromC - toC);
+    if (dist === 1) return true;
+
+    return false;
+}
+
+// -------- 吃子裁决 [citation:1][citation:6] --------
+function resolveAttack(attacker, defender) {
+    if (!defender) return { result: 'move', winner: null };
+
+    // 炸弹遇到任何棋子同归于尽[citation:1][citation:6]
+    if (attacker.rank === RANKS.BOMB) {
+        return { result: 'attack', winner: null };
+    }
+    if (defender.rank === RANKS.BOMB) {
+        return { result: 'attack', winner: null };
+    }
+
+    // 军旗被攻击即被夺取[citation:1][citation:6]
+    if (defender.type === 'FLAG') {
+        return { result: 'attack', winner: 'attacker' };
+    }
+
+    // 地雷特殊规则[citation:1][citation:10]
+    if (defender.type === 'MINE') {
+        if (attacker.type === 'PRIVATE') {
+            return { result: 'attack', winner: 'attacker' };
         }
+        return { result: 'attack', winner: 'defender' };
+    }
 
-        // -------- 渲染棋盘 --------
-        function renderBoard() {
-            boardEl.innerHTML = '';
-            for (let r = 0; r < 6; r++) {
-                for (let c = 0; c < 6; c++) {
-                    const cell = document.createElement('div');
-                    cell.className = 'cell';
-                    cell.dataset.row = r;
-                    cell.dataset.col = c;
+    // 等级比较[citation:1]
+    if (attacker.rank > defender.rank) {
+        return { result: 'attack', winner: 'attacker' };
+    } else if (attacker.rank < defender.rank) {
+        return { result: 'attack', winner: 'defender' };
+    } else {
+        return { result: 'attack', winner: null };
+    }
+}
 
-                    // 标记特殊区域
-                    if (isCamp(r, c)) {
-                        cell.classList.add('camp');
-                    }
-                    if (isBase(r, c)) {
-                        cell.classList.add('base');
-                    }
+// -------- 执行走棋 --------
+function executeMove(fromR, fromC, toR, toC) {
+    if (gameOver) return false;
 
-                    // 铁路标记 (用于显示)
-                    if (hasRailH(r, c) && hasRailV(r, c)) {
-                        cell.classList.add('rail-hv');
-                    } else if (hasRailH(r, c)) {
-                        cell.classList.add('rail-h');
-                    } else if (hasRailV(r, c)) {
-                        cell.classList.add('rail-v');
-                    }
+    const piece = board[fromR][fromC];
+    const target = board[toR][toC];
 
-                    const piece = board[r][c];
+    if (!isValidMove(fromR, fromC, toR, toC)) {
+        messageEl.textContent = '❌ 无效走法! 请检查铁路/公路规则';
+        return false;
+    }
 
-                    // 选中高亮
-                    if (selectedPos && selectedPos.row === r && selectedPos.col === c) {
-                        cell.classList.add('selected');
-                    }
+    // 行营安全区: 不能攻击行营中的棋子[citation:1]
+    if (target && isCamp(toR, toC)) {
+        messageEl.textContent = '❌ 行营是安全区, 不能攻击里面的棋子';
+        return false;
+    }
 
-                    // 可走位置高亮
-                    if (selectedPos) {
-                        if (isValidMove(selectedPos.row, selectedPos.col, r, c)) {
-                            const target = board[r][c];
-                            if (target && target.player !== board[selectedPos.row][selectedPos.col].player) {
-                                // 检查是否是行营
-                                if (!isCamp(r, c)) {
-                                    cell.classList.add('can-attack');
-                                }
-                            } else if (!target) {
-                                cell.classList.add('can-move');
-                            }
-                        }
-                    }
+    const result = resolveAttack(piece, target);
+    let moveMsg = '';
 
-                    // 棋子显示
-                    if (piece) {
-                        cell.classList.add('has-piece');
-                        const pieceDiv = document.createElement('div');
-                        pieceDiv.className = `piece ${piece.player}`;
+    if (result.result === 'move') {
+        board[toR][toC] = piece;
+        board[fromR][fromC] = null;
+        moveMsg = `✅ ${getPieceDisplay(piece)} 移动`;
+    } else {
+        const attackerName = getPieceDisplay(piece);
+        const defenderName = target ? getPieceDisplay(target) : '空';
 
-                        const emojiSpan = document.createElement('span');
-                        emojiSpan.className = 'emoji';
-                        emojiSpan.textContent = RANK_EMOJIS[piece.rank] || '';
+        if (result.winner === null) {
+            board[fromR][fromC] = null;
+            board[toR][toC] = null;
+            moveMsg = `💥 ${attackerName} 与 ${defenderName} 同归于尽!`;
+        } else if (result.winner === 'attacker') {
+            board[toR][toC] = piece;
+            board[fromR][fromC] = null;
+            moveMsg = `⚔️ ${attackerName} 消灭了 ${defenderName}!`;
 
-                        const rankSpan = document.createElement('span');
-                        rankSpan.className = 'rank';
-                        rankSpan.textContent = piece.rank >= 0 ? piece.rank : '';
-
-                        const nameSpan = document.createElement('span');
-                        nameSpan.className = 'name';
-                        nameSpan.textContent = RANK_NAMES[piece.rank] || '';
-
-                        pieceDiv.appendChild(emojiSpan);
-                        pieceDiv.appendChild(rankSpan);
-                        pieceDiv.appendChild(nameSpan);
-                        cell.appendChild(pieceDiv);
-
-                        cell.addEventListener('click', () => onCellClick(r, c));
-                    } else {
-                        cell.addEventListener('click', () => onCellClick(r, c));
-                    }
-
-                    boardEl.appendChild(cell);
-                }
+            if (target && target.type === 'FLAG') {
+                gameOver = true;
+                const winner = piece.player === 'red' ? '红方' : '蓝方';
+                messageEl.innerHTML = `🎉 <span class="win-${piece.player}">${winner}</span> 夺取军旗获胜! 🎉`;
+                updateStatus(); renderBoard(); return true;
             }
+        } else {
+            board[fromR][fromC] = null;
+            moveMsg = `💀 ${attackerName} 被 ${defenderName} 消灭!`;
         }
+    }
 
-        // -------- 点击处理 --------
-        function onCellClick(row, col) {
-            if (gameOver) return;
+    // 胜利条件: 消灭所有棋子[citation:1]
+    if (!gameOver) {
+        const redAlive = countAlive('red');
+        const blueAlive = countAlive('blue');
+        if (redAlive === 0) {
+            gameOver = true;
+            messageEl.innerHTML = '🎉 <span class="win-blue">蓝方</span> 全歼红方获胜! 🎉';
+        } else if (blueAlive === 0) {
+            gameOver = true;
+            messageEl.innerHTML = '🎉 <span class="win-red">红方</span> 全歼蓝方获胜! 🎉';
+        }
+    }
 
-            const piece = board[row][col];
+    if (!gameOver) {
+        currentPlayer = (currentPlayer === 'red' ? 'blue' : 'red');
+        messageEl.textContent = moveMsg;
+    }
 
+    selectedPos = null;
+    updateStatus();
+    renderBoard();
+    return true;
+}
+
+function countAlive(player) {
+    let count = 0;
+    for (let r = 0; r < 12; r++) {
+        for (let c = 0; c < 5; c++) {
+            const p = board[r][c];
+            if (p && p.player === player && p.type !== 'FLAG') count++;
+        }
+    }
+    return count;
+}
+
+// -------- 更新状态 --------
+function updateStatus() {
+    const isRed = currentPlayer === 'red' && !gameOver;
+    const isBlue = currentPlayer === 'blue' && !gameOver;
+    redStatusEl.textContent = isRed ? '● 当前' : '○ 等待';
+    redStatusEl.className = isRed ? 'active' : 'inactive';
+    blueStatusEl.textContent = isBlue ? '● 当前' : '○ 等待';
+    blueStatusEl.className = isBlue ? 'active' : 'inactive';
+    turnIndicatorEl.textContent = gameOver ? '🏁 游戏结束' : `🎯 ${currentPlayer==='red'?'红方':'蓝方'}走棋`;
+}
+
+// -------- 渲染棋盘 --------
+function renderBoard() {
+    boardEl.innerHTML = '';
+    for (let r = 0; r < 12; r++) {
+        for (let c = 0; c < 5; c++) {
+            const cell = document.createElement('div');
+            cell.className = 'cell';
+            cell.dataset.row = r;
+            cell.dataset.col = c;
+
+            if (isCamp(r,c)) cell.classList.add('camp');
+            if (isBase(r,c)) cell.classList.add('base');
+            if (hasRailH(r,c) && hasRailV(r,c)) cell.classList.add('rail-hv');
+            else if (hasRailH(r,c)) cell.classList.add('rail-h');
+            else if (hasRailV(r,c)) cell.classList.add('rail-v');
+
+            const piece = board[r][c];
+
+            if (selectedPos && selectedPos.row === r && selectedPos.col === c) {
+                cell.classList.add('selected');
+            }
             if (selectedPos) {
-                const fromRow = selectedPos.row;
-                const fromCol = selectedPos.col;
-                const fromPiece = board[fromRow][fromCol];
-
-                if (row === fromRow && col === fromCol) {
-                    selectedPos = null;
-                    renderBoard();
-                    return;
-                }
-
-                // 点击己方其他棋子, 切换选中
-                if (piece && piece.player === currentPlayer) {
-                    selectedPos = { row, col };
-                    renderBoard();
-                    return;
-                }
-
-                // 尝试走棋
-                if (fromPiece && fromPiece.player === currentPlayer) {
-                    const success = executeMove(fromRow, fromCol, row, col);
-                    if (!success) {
-                        selectedPos = null;
-                        renderBoard();
+                if (isValidMove(selectedPos.row, selectedPos.col, r, c)) {
+                    const target = board[r][c];
+                    if (target && target.player !== board[selectedPos.row][selectedPos.col].player) {
+                        if (!isCamp(r,c)) cell.classList.add('can-attack');
+                    } else if (!target) {
+                        cell.classList.add('can-move');
                     }
-                    return;
                 }
-
-                selectedPos = null;
-                renderBoard();
-                return;
             }
 
-            // 未选中: 选择己方棋子
-            if (piece && piece.player === currentPlayer) {
-                // 检查棋子是否可移动 (军旗/地雷不能移动)
-                if (piece.type === 'FLAG' || piece.type === 'MINE') {
-                    messageEl.textContent = `❌ ${getPieceDisplay(piece)} 不能移动`;
-                    return;
-                }
-                if (isBase(row, col)) {
-                    messageEl.textContent = `❌ 大本营中的棋子不能移动`;
-                    return;
-                }
-                selectedPos = { row, col };
-                renderBoard();
-                messageEl.textContent = `选中 ${getPieceDisplay(piece)}，点击目标位置 (铁路可走任意距离)`;
+            if (piece) {
+                cell.classList.add('has-piece');
+                const div = document.createElement('div');
+                div.className = `piece ${piece.player}`;
+                div.innerHTML = `
+                    <span class="emoji">${RANK_EMOJIS[piece.rank]||''}</span>
+                    <span class="rank">${piece.rank>=0?piece.rank:''}</span>
+                    <span class="name">${RANK_NAMES[piece.rank]||''}</span>
+                `;
+                cell.appendChild(div);
+                cell.addEventListener('click', () => onCellClick(r,c));
             } else {
-                messageEl.textContent = `请选择 ${currentPlayer === 'red' ? '红方' : '蓝方'} 的棋子`;
+                cell.addEventListener('click', () => onCellClick(r,c));
             }
+            boardEl.appendChild(cell);
         }
+    }
+}
 
-        // -------- 重置游戏 --------
-        function resetGame() {
-            initBoard();
-            renderBoard();
-            messageEl.textContent = '🔄 新游戏开始! 红方先走, 点击棋子选中再点击目标';
-            selectedPos = null;
-            gameOver = false;
-            updateStatus();
+// -------- 点击处理 --------
+function onCellClick(row, col) {
+    if (gameOver) return;
+    const piece = board[row][col];
+
+    if (selectedPos) {
+        const fr = selectedPos.row, fc = selectedPos.col;
+        const fp = board[fr][fc];
+
+        if (row === fr && col === fc) {
+            selectedPos = null; renderBoard(); return;
         }
+        if (piece && piece.player === currentPlayer) {
+            selectedPos = { row, col }; renderBoard(); return;
+        }
+        if (fp && fp.player === currentPlayer) {
+            const success = executeMove(fr, fc, row, col);
+            if (!success) { selectedPos = null; renderBoard(); }
+            return;
+        }
+        selectedPos = null; renderBoard(); return;
+    }
 
-        // -------- 启动游戏 --------
-        initBoard();
+    if (piece && piece.player === currentPlayer) {
+        if (piece.type === 'FLAG' || piece.type === 'MINE') {
+            messageEl.textContent = `❌ ${getPieceDisplay(piece)} 不能移动`;
+            return;
+        }
+        if (isBase(row, col)) {
+            messageEl.textContent = '❌ 大本营中的棋子不能移动';
+            return;
+        }
+        selectedPos = { row, col };
         renderBoard();
-        messageEl.textContent = '🎮 游戏开始! 红方先走, 铁路可走任意距离, 行营为安全区';
-        updateStatus();
+        messageEl.textContent = `选中 ${getPieceDisplay(piece)}，点击目标`;
+    } else {
+        messageEl.textContent = `请选择 ${currentPlayer==='red'?'红方':'蓝方'} 的棋子`;
+    }
+}
 
-        window.resetGame = resetGame;
-    </script>
+// -------- 重置 --------
+function resetGame() {
+    initBoard();
+    renderBoard();
+    messageEl.textContent = '🔄 新游戏开始! 红方先走';
+    selectedPos = null;
+    gameOver = false;
+    updateStatus();
+}
+
+// -------- 启动 --------
+initBoard();
+renderBoard();
+messageEl.textContent = '🎮 游戏开始! 红方先走';
+updateStatus();
+window.resetGame = resetGame;
+</script>
 </body>
 </html>
