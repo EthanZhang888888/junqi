@@ -2,1187 +2,523 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>军棋 - 真实棋盘版</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>军棋棋盘</title>
     <style>
         * {
-            margin: 0;<!DOCTYPE html>
-<html>
-<head>
-<meta charset="UTF-8">
-<title>军棋棋盘模型</title>
-<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    body {
-        background: #1a1a2e;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        font-family: Arial, sans-serif;
-        padding: 20px;
-    }
-    .container {
-        background: #0f3460;
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 20px 60px rgba(0,0,0,0.8);
-    }
-    h1 {
-        color: #ffd700;
-        text-align: center;
-        margin-bottom: 20px;
-        font-size: 24px;
-        letter-spacing: 3px;
-    }
-    .legend {
-        display: flex;
-        justify-content: center;
-        gap: 20px;
-        margin-bottom: 15px;
-        color: #ccc;
-        font-size: 14px;
-        flex-wrap: wrap;
-    }
-    .legend-item {
-        display: flex;
-        align-items: center;
-        gap: 6px;
-    }
-    .legend-color {
-        width: 20px;
-        height: 20px;
-        border-radius: 4px;
-        border: 1px solid rgba(255,255,255,0.2);
-    }
-    .legend-color.normal { background: #3a3a6a; }
-    .legend-color.camp { background: #1a5a3a; }
-    .legend-color.base { background: #5a2a2a; }
-    .legend-color.rail { background: #6a6a8a; }
-    .board {
-        display: grid;
-        grid-template-columns: repeat(5, 1fr);
-        gap: 3px;
-        background: #1a1a3a;
-        padding: 5px;
-        border-radius: 8px;
-        border: 2px solid #4a4a6a;
-        max-width: 500px;
-        margin: 0 auto;
-    }
-    .cell {
-        aspect-ratio: 1;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        font-size: 10px;
-        font-weight: bold;
-        border-radius: 4px;
-        position: relative;
-        min-height: 40px;
-        border: 1px solid rgba(255,255,255,0.05);
-    }
-    .cell.normal {
-        background: #3a3a6a;
-    }
-    .cell.camp {
-        background: #1a5a3a;
-        border: 2px solid #3a8a5a;
-    }
-    .cell.camp::after {
-        content: '🏕';
-        font-size: 14px;
-        opacity: 0.4;
-    }
-    .cell.base {
-        background: #5a2a2a;
-        border: 2px solid #8a4a4a;
-    }
-    .cell.base::after {
-        content: '🏰';
-        font-size: 14px;
-        opacity: 0.4;
-    }
-    .cell .label {
-        position: absolute;
-        bottom: 2px;
-        right: 3px;
-        font-size: 8px;
-        color: rgba(255,255,255,0.3);
-    }
-    .cell .pos {
-        font-size: 9px;
-        color: rgba(255,255,255,0.5);
-        z-index: 1;
-    }
-    /* 铁路标记 */
-    .cell.rail-h {
-        border-top: 3px solid #6a6a8a;
-        border-bottom: 3px solid #6a6a8a;
-    }
-    .cell.rail-v {
-        border-left: 3px solid #6a6a8a;
-        border-right: 3px solid #6a6a8a;
-    }
-    .cell.rail-hv {
-        border: 3px solid #6a6a8a;
-    }
-    .cell .rail-icon {
-        position: absolute;
-        font-size: 10px;
-        color: rgba(255,255,255,0.15);
-    }
-    .cell .rail-icon.h { top: -4px; }
-    .cell .rail-icon.v { left: -4px; }
-    .info {
-        margin-top: 20px;
-        padding: 15px;
-        background: rgba(0,0,0,0.3);
-        border-radius: 8px;
-        color: #aaa;
-        font-size: 13px;
-        line-height: 1.8;
-    }
-    .info strong { color: #ffd700; }
-</style>
-</head>
-<body>
-<div class="container">
-    <h1>⚔️ 标准军棋棋盘</h1>
-    <div class="legend">
-        <span class="legend-item"><span class="legend-color normal"></span> 兵站</span>
-        <span class="legend-item"><span class="legend-color camp"></span> 行营 (安全区)</span>
-        <span class="legend-item"><span class="legend-color base"></span> 大本营</span>
-        <span class="legend-item"><span class="legend-color rail"></span> 铁路</span>
-    </div>
-    <div class="board" id="board"></div>
-    <div class="info">
-        <strong>📐 棋盘规格</strong><br>
-        • <strong>12行 × 5列</strong> = 60个停靠点<br>
-        • <strong>行营</strong> (🟩): 每方5个，共10个，安全区不可被攻击<br>
-        • <strong>大本营</strong> (🟥): 每方2个，共4个，放置军旗和地雷<br>
-        • <strong>兵站</strong> (🟦): 每方23个，共46个，普通棋子位置<br>
-        • <strong>铁路线</strong> (═══): 粗线，棋子可快速移动<br>
-        • <strong>公路线</strong> (┊): 细线，每次只能走一步<br>
-        • <strong>蓝方</strong> (上方): 行0-5 &nbsp;|&nbsp; <strong>红方</strong> (下方): 行6-11
-    </div>
-</div>
-
-<script>
-// ================================================================
-// 标准军棋棋盘数据 (12行 × 5列)
-// ================================================================
-
-const BOARD_MAP = [];
-
-// 行0: 蓝方底线
-BOARD_MAP[0] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'base',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行1: 蓝方二线
-BOARD_MAP[1] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行2: 蓝方三线
-BOARD_MAP[2] = [
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'camp',   railH: false, railV: false }
-];
-
-// 行3: 蓝方四线
-BOARD_MAP[3] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行4: 蓝方五线
-BOARD_MAP[4] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行5: 蓝方底线
-BOARD_MAP[5] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行6: 红方底线
-BOARD_MAP[6] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行7: 红方二线
-BOARD_MAP[7] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行8: 红方三线
-BOARD_MAP[8] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行9: 红方四线
-BOARD_MAP[9] = [
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'normal', railH: true,  railV: false },
-    { type: 'camp',   railH: false, railV: false }
-];
-
-// 行10: 红方五线
-BOARD_MAP[10] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'camp',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// 行11: 红方底线
-BOARD_MAP[11] = [
-    { type: 'normal', railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'base',   railH: false, railV: false },
-    { type: 'normal', railH: false, railV: true  },
-    { type: 'normal', railH: false, railV: false }
-];
-
-// -------- 渲染 --------
-const boardEl = document.getElementById('board');
-
-for (let r = 0; r < 12; r++) {
-    for (let c = 0; c < 5; c++) {
-        const cell = document.createElement('div');
-        const data = BOARD_MAP[r][c];
-        cell.className = `cell ${data.type}`;
-
-        if (data.railH && data.railV) cell.classList.add('rail-hv');
-        else if (data.railH) cell.classList.add('rail-h');
-        else if (data.railV) cell.classList.add('rail-v');
-
-        const posSpan = document.createElement('span');
-        posSpan.className = 'pos';
-        posSpan.textContent = `${String.fromCharCode(65+c)}${r+1}`;
-        cell.appendChild(posSpan);
-
-        boardEl.appendChild(cell);
-    }
-}
-</script>
-</body>
-</html>
+            margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            background: linear-gradient(135deg, #1a1a2e, #16213e);
-            color: #fff;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            padding: 20px;
-        }
-        .game-container {
-            background: #0f3460;
-            border-radius: 20px;
-            padding: 25px 30px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.8);
-            max-width: 800px;
+
+        html, body {
             width: 100%;
+            height: 100%;
+            overflow: hidden;
+            font-family: 'PingFang SC', 'Microsoft YaHei', Arial, sans-serif;
+            background: #0a0a1a;
+            touch-action: none;
         }
-        h1 {
-            text-align: center;
-            color: #ffd700;
-            margin-bottom: 15px;
-            font-size: 26px;
-            letter-spacing: 4px;
+
+        /* ===== 背景 ===== */
+        .bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background:
+                radial-gradient(ellipse at 20% 50%, rgba(30, 60, 120, 0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 80% 50%, rgba(60, 30, 80, 0.3) 0%, transparent 60%),
+                radial-gradient(ellipse at 50% 100%, rgba(20, 40, 80, 0.4) 0%, transparent 50%),
+                linear-gradient(180deg, #0a0a1a 0%, #12122a 40%, #1a1a3a 100%);
+            z-index: 0;
         }
-        .game-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 12px;
-            padding: 8px 16px;
-            background: rgba(0, 0, 0, 0.3);
-            border-radius: 8px;
-            flex-wrap: wrap;
-            gap: 6px;
-        }
-        .player-info {
-            font-size: 14px;
-            font-weight: bold;
-        }
-        .player-info .active {
-            color: #ffd700;
-        }
-        .player-info .inactive {
-            color: #888;
-        }
-        .turn-indicator {
-            font-size: 16px;
-            color: #ffd700;
-            animation: blink 1s infinite;
-        }
-        @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.3; }
-        }
-        .board-wrapper {
-            position: relative;
-            background: #1a1a3a;
-            padding: 8px;
-            border-radius: 10px;
-            border: 2px solid #4a4a6a;
-            margin-bottom: 12px;
-            overflow-x: auto;
-        }
-        .board {
-            display: grid;
-            grid-template-columns: repeat(12, 1fr);
-            gap: 2px;
-            background: #1a1a3a;
-            min-width: 500px;
-            aspect-ratio: 12 / 5;
-        }
-        .cell {
-            aspect-ratio: 1;
-            background: #2a2a4a;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            font-size: 9px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 3px;
-            transition: all 0.15s;
-            position: relative;
-            user-select: none;
-            min-height: 35px;
-            border: 1px solid rgba(255,255,255,0.04);
-        }
-        .cell:hover:not(.empty) {
-            background: #3a3a5a;
-            transform: scale(1.04);
-            z-index: 2;
-        }
-        /* 行营 - 安全区 */
-        .cell.camp {
-            background: #1a3a2a !important;
-            border: 2px solid #3a7a4a;
-        }
-        .cell.camp::after {
-            content: '🏕';
+
+        /* 纹理叠加 */
+        .bg::before {
+            content: '';
             position: absolute;
-            font-size: 12px;
-            opacity: 0.25;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                radial-gradient(circle at 30% 40%, rgba(255, 215, 0, 0.03) 0%, transparent 50%),
+                radial-gradient(circle at 70% 60%, rgba(255, 215, 0, 0.02) 0%, transparent 50%);
+            pointer-events: none;
         }
-        /* 大本营 */
-        .cell.base {
-            background: #3a1a1a !important;
-            border: 2px solid #7a3a3a;
-        }
-        .cell.base::after {
-            content: '🏰';
+
+        .bg::after {
+            content: '';
             position: absolute;
-            font-size: 12px;
-            opacity: 0.25;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(255, 255, 255, 0.01) 2px, rgba(255, 255, 255, 0.01) 4px);
+            pointer-events: none;
         }
-        /* 铁路线视觉标记 */
-        .cell.rail-h {
-            border-top: 2px solid #5a5a7a;
-            border-bottom: 2px solid #5a5a7a;
-        }
-        .cell.rail-v {
-            border-left: 2px solid #5a5a7a;
-            border-right: 2px solid #5a5a7a;
-        }
-        .cell.rail-hv {
-            border: 2px solid #5a5a7a;
-        }
-        /* 棋子状态 */
-        .cell.has-piece {
-            background: #1a3a6a;
-        }
-        .cell.selected {
-            background: #ffd700 !important;
-            transform: scale(1.08);
-            z-index: 3;
-            box-shadow: 0 0 20px rgba(255,215,0,0.5);
-        }
-        .cell.can-move {
-            background: rgba(0,255,0,0.25) !important;
-            cursor: pointer;
-        }
-        .cell.can-attack {
-            background: rgba(255,0,0,0.25) !important;
-            cursor: pointer;
-        }
-        .cell .piece {
+
+        /* ===== 主容器 ===== */
+        .container {
+            position: relative;
+            z-index: 1;
             width: 100%;
             height: 100%;
             display: flex;
             flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            border-radius: 3px;
-            text-shadow: 0 0 3px rgba(0,0,0,0.6);
-            padding: 1px;
-            line-height: 1.1;
-            z-index: 1;
-            font-size: 9px;
+            padding: 8px;
+            gap: 6px;
         }
-        .cell .piece.red {
-            color: #ff4444;
-            background: rgba(255,68,68,0.12);
-            border: 1.5px solid #ff4444;
-        }
-        .cell .piece.blue {
-            color: #44aaff;
-            background: rgba(68,170,255,0.12);
-            border: 1.5px solid #44aaff;
-        }
-        .cell .piece .rank {
-            font-size: 15px;
-            font-weight: bold;
-        }
-        .cell .piece .name {
-            font-size: 7px;
-            opacity: 0.85;
-        }
-        .cell .piece .emoji {
-            font-size: 14px;
-        }
-        .controls {
+
+        /* ===== 标题 ===== */
+        .header {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            padding: 4px 12px;
+            flex-shrink: 0;
+            min-height: 36px;
         }
-        .controls button {
-            padding: 10px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 15px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
+        .header h1 {
+            font-size: clamp(14px, 3vw, 24px);
+            font-weight: 700;
+            color: #ffd700;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.15), 0 2px 10px rgba(0, 0, 0, 0.5);
+            letter-spacing: 2px;
         }
-        .controls button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(102,126,234,0.4);
+        .header .sub {
+            font-size: clamp(10px, 1.6vw, 14px);
+            color: rgba(255, 255, 255, 0.4);
+            letter-spacing: 1px;
         }
-        .controls button.reset {
-            background: linear-gradient(135deg, #f093fb, #f5576c);
-        }
-        .controls button.reset:hover {
-            box-shadow: 0 6px 20px rgba(245,87,108,0.4);
-        }
-        .message {
-            text-align: center;
-            padding: 12px;
-            margin: 8px 0;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            background: rgba(0,0,0,0.3);
-            min-height: 44px;
-        }
-        .message .win-red { color: #ff4444; }
-        .message .win-blue { color: #44aaff; }
+
+        /* ===== 图例 ===== */
         .legend {
             display: flex;
             justify-content: center;
-            gap: 12px;
-            margin: 8px 0;
-            padding: 8px;
-            background: rgba(0,0,0,0.2);
-            border-radius: 6px;
-            font-size: 11px;
+            gap: clamp(6px, 1.5vw, 16px);
+            flex-shrink: 0;
+            padding: 4px 8px;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
             flex-wrap: wrap;
         }
         .legend-item {
             display: flex;
             align-items: center;
             gap: 4px;
+            font-size: clamp(9px, 1.4vw, 12px);
+            color: rgba(255, 255, 255, 0.6);
         }
-        .legend-color {
-            width: 14px;
-            height: 14px;
-            border-radius: 3px;
+        .legend-dot {
+            width: clamp(12px, 1.8vw, 18px);
+            height: clamp(12px, 1.8vw, 18px);
+            border-radius: 4px;
+            flex-shrink: 0;
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        .legend-color.red { background: #ff4444; }
-        .legend-color.blue { background: #44aaff; }
-        @media (max-width: 700px) {
-            .game-container { padding: 12px; }
-            .cell { min-height: 28px; font-size: 7px; }
-            .cell .piece .rank { font-size: 11px; }
-            .cell .piece .name { font-size: 6px; }
-            .cell .piece .emoji { font-size: 10px; }
-            .board { min-width: 350px; }
-            .controls button { padding: 8px 16px; font-size: 13px; }
+        .legend-dot.normal { background: #3a3a6a; }
+        .legend-dot.camp { background: #1a6a3a; border-color: #3a8a5a; }
+        .legend-dot.base { background: #6a2a2a; border-color: #8a4a4a; }
+        .legend-dot.rail { background: #5a5a7a; }
+
+        /* ===== 棋盘容器 ===== */
+        .board-wrapper {
+            flex: 1;
+            min-height: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2px;
+            background: rgba(0, 0, 0, 0.25);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            box-shadow: inset 0 0 60px rgba(0, 0, 0, 0.5);
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 2px;
+            width: 100%;
+            height: 100%;
+            aspect-ratio: 5 / 12;
+            max-width: min(85vh, 95vw);
+            max-height: 95vh;
+            padding: 2px;
+            background:
+                radial-gradient(ellipse at center, rgba(30, 40, 80, 0.5) 0%, transparent 70%);
+            border-radius: 8px;
+        }
+
+        /* ===== 格子 ===== */
+        .cell {
+            aspect-ratio: 1;
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            transition: all 0.15s;
+            min-height: 0;
+            min-width: 0;
+            border: 1px solid rgba(255, 255, 255, 0.04);
+        }
+
+        /* 兵站 */
+        .cell.normal {
+            background: linear-gradient(145deg, rgba(50, 50, 90, 0.6), rgba(30, 30, 60, 0.8));
+            border-color: rgba(255, 255, 255, 0.06);
+        }
+        .cell.normal::before {
+            content: '';
+            position: absolute;
+            inset: 2px;
+            border-radius: 2px;
+            background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.04), transparent 70%);
+            pointer-events: none;
+        }
+
+        /* 行营 - 安全区 */
+        .cell.camp {
+            background: radial-gradient(ellipse at center, rgba(26, 106, 58, 0.5), rgba(10, 50, 30, 0.8));
+            border: 2px solid rgba(58, 138, 90, 0.5);
+            box-shadow: inset 0 0 20px rgba(58, 138, 90, 0.1), 0 0 15px rgba(58, 138, 90, 0.05);
+        }
+        .cell.camp::after {
+            content: '🏕';
+            font-size: clamp(12px, 2.5vw, 24px);
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        /* 大本营 */
+        .cell.base {
+            background: radial-gradient(ellipse at center, rgba(106, 42, 42, 0.6), rgba(50, 20, 20, 0.9));
+            border: 2px solid rgba(138, 74, 74, 0.5);
+            box-shadow: inset 0 0 20px rgba(138, 74, 74, 0.1), 0 0 15px rgba(138, 74, 74, 0.05);
+        }
+        .cell.base::after {
+            content: '🏰';
+            font-size: clamp(12px, 2.5vw, 24px);
+            opacity: 0.3;
+            position: absolute;
+        }
+
+        /* ===== 铁路线 ===== */
+        .cell.rail-h {
+            border-top: 3px solid rgba(90, 90, 130, 0.6);
+            border-bottom: 3px solid rgba(90, 90, 130, 0.6);
+        }
+        .cell.rail-v {
+            border-left: 3px solid rgba(90, 90, 130, 0.6);
+            border-right: 3px solid rgba(90, 90, 130, 0.6);
+        }
+        .cell.rail-hv {
+            border: 3px solid rgba(90, 90, 130, 0.6);
+        }
+
+        /* 铁路发光 */
+        .cell.rail-h::before,
+        .cell.rail-v::before,
+        .cell.rail-hv::before {
+            content: '';
+            position: absolute;
+            inset: -1px;
+            border-radius: 4px;
+            background: linear-gradient(90deg, transparent, rgba(100, 100, 180, 0.05), transparent);
+            pointer-events: none;
+        }
+
+        /* ===== 坐标 ===== */
+        .cell .coord {
+            position: absolute;
+            font-size: clamp(6px, 1vw, 10px);
+            color: rgba(255, 255, 255, 0.15);
+            font-weight: 300;
+            pointer-events: none;
+            font-family: monospace;
+        }
+        .cell .coord.top { top: 1px; left: 3px; }
+        .cell .coord.bottom { bottom: 1px; right: 3px; }
+
+        /* ===== 分割线 (中线) ===== */
+        .board .row-divider {
+            display: none;
+        }
+
+        /* ===== 交互状态 ===== */
+        .cell.clickable {
+            cursor: pointer;
+        }
+        .cell.clickable:active {
+            transform: scale(0.92);
+        }
+        .cell .piece-indicator {
+            font-size: clamp(10px, 2vw, 20px);
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.15);
+            letter-spacing: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* ===== 底部信息 ===== */
+        .footer {
+            display: flex;
+            justify-content: center;
+            gap: clamp(10px, 2vw, 24px);
+            flex-shrink: 0;
+            padding: 4px 12px;
+            font-size: clamp(9px, 1.4vw, 12px);
+            color: rgba(255, 255, 255, 0.25);
+            letter-spacing: 0.5px;
+        }
+        .footer span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .footer .dot {
+            display: inline-block;
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+        .footer .dot.red { background: #ff4444; box-shadow: 0 0 10px rgba(255, 68, 68, 0.3); }
+        .footer .dot.blue { background: #44aaff; box-shadow: 0 0 10px rgba(68, 170, 255, 0.3); }
+
+        /* ===== 响应式 ===== */
+        @media (max-width: 500px) {
+            .container { padding: 4px; gap: 4px; }
+            .header { padding: 2px 8px; min-height: 28px; }
+            .legend { padding: 3px 6px; gap: 4px; border-radius: 6px; }
+            .board-wrapper { border-radius: 8px; padding: 2px; }
+            .board { gap: 1.5px; padding: 1.5px; }
+            .cell { border-radius: 3px; }
+            .cell.camp::after,
+            .cell.base::after { font-size: clamp(10px, 2.5vw, 16px); }
+            .cell.rail-h { border-top-width: 2px; border-bottom-width: 2px; }
+            .cell.rail-v { border-left-width: 2px; border-right-width: 2px; }
+            .cell.rail-hv { border-width: 2px; }
+            .footer { padding: 2px 8px; font-size: clamp(7px, 1.2vw, 10px); }
+        }
+
+        @media (max-width: 380px) {
+            .container { padding: 2px; gap: 2px; }
+            .header h1 { font-size: 12px; }
+            .board { gap: 1px; padding: 1px; }
+            .cell { border-radius: 2px; }
+            .legend-item { font-size: 7px; }
+            .legend-dot { width: 10px; height: 10px; }
+        }
+
+        @media (orientation: landscape) and (max-height: 500px) {
+            .header { min-height: 24px; }
+            .header h1 { font-size: clamp(12px, 2.5vh, 18px); }
+            .legend { padding: 2px 6px; gap: 3px; }
+            .legend-item { font-size: clamp(7px, 1.2vh, 10px); }
+            .footer { font-size: clamp(7px, 1.2vh, 10px); }
+            .board-wrapper { border-radius: 6px; }
         }
     </style>
 </head>
 <body>
-<div class="game-container">
-    <h1>⚔️ 军棋</h1>
+
+<div class="bg"></div>
+
+<div class="container">
+    <!-- 标题 -->
+    <div class="header">
+        <h1>⚔ 军棋</h1>
+        <span class="sub">棋盘</span>
+    </div>
+
+    <!-- 图例 -->
     <div class="legend">
-        <span class="legend-item"><span class="legend-color red"></span>红方</span>
-        <span class="legend-item"><span class="legend-color blue"></span>蓝方</span>
-        <span class="legend-item">⚑军旗</span>
-        <span class="legend-item">💣炸弹</span>
-        <span class="legend-item">⛰地雷</span>
-        <span class="legend-item">🏕行营</span>
-        <span class="legend-item">🏰大本营</span>
+        <span class="legend-item"><span class="legend-dot normal"></span>兵站</span>
+        <span class="legend-item"><span class="legend-dot camp"></span>行营</span>
+        <span class="legend-item"><span class="legend-dot base"></span>大本营</span>
+        <span class="legend-item"><span class="legend-dot rail"></span>铁路</span>
     </div>
-    <div class="game-info">
-        <div class="player-info">红方: <span id="redStatus" class="active">● 当前</span></div>
-        <div class="turn-indicator" id="turnIndicator">🎯 红方走棋</div>
-        <div class="player-info">蓝方: <span id="blueStatus" class="inactive">○ 等待</span></div>
+
+    <!-- 棋盘 -->
+    <div class="board-wrapper">
+        <div class="board" id="board"></div>
     </div>
-    <div class="board-wrapper"><div class="board" id="board"></div></div>
-    <div class="message" id="message">点击棋子选中，再点击目标移动或攻击</div>
-    <div class="controls">
-        <button class="reset" onclick="resetGame()">🔄 重新开局</button>
+
+    <!-- 底部 -->
+    <div class="footer">
+        <span><span class="dot red"></span> 红方</span>
+        <span>│</span>
+        <span><span class="dot blue"></span> 蓝方</span>
+        <span>│</span>
+        <span>12行 × 5列</span>
+        <span>│</span>
+        <span>60 停靠点</span>
     </div>
 </div>
 
 <script>
-// ================================================================
-// 军棋核心 - 基于真实棋盘规格 (12行 x 5列)
-// 数据来源: 军棋标准规则[citation:1][citation:10]
-// ================================================================
+    // ================================================================
+    // 标准军棋棋盘数据 (12行 × 5列)
+    // ================================================================
 
-// -------- 棋子等级定义 (数字越大等级越高) --------
-// 参考: 司令>军长>师长>旅长>团长>营长>连长>排长>工兵[citation:1][citation:6]
-const RANKS = {
-    COMMANDER: 9,  // 司令
-    GENERAL: 8,    // 军长
-    CAPTAIN: 7,    // 师长
-    COLONEL: 6,    // 旅长
-    MAJOR: 5,      // 团长
-    LIEUTENANT: 4, // 营长
-    SERGEANT: 3,   // 连长
-    CORPORAL: 2,   // 排长
-    PRIVATE: 1,    // 工兵
-    BOMB: 0,       // 炸弹
-    MINE: -1,      // 地雷
-    FLAG: -2       // 军旗
-};
+    const BOARD_MAP = [];
 
-const RANK_NAMES = {
-    9: '司令', 8: '军长', 7: '师长', 6: '旅长', 5: '团长',
-    4: '营长', 3: '连长', 2: '排长', 1: '工兵',
-    0: '💣', '-1': '⛰', '-2': '⚑'
-};
-const RANK_EMOJIS = {
-    9: '🎖', 8: '⭐', 7: '🌟', 6: '✨', 5: '💫',
-    4: '🌟', 3: '⭐', 2: '✨', 1: '🔧',
-    0: '💣', '-1': '⛰', '-2': '⚑'
-};
-
-// -------- 棋子配置 (每方25枚) [citation:1][citation:6] --------
-// 司令、军长、军旗各1；师长、旅长、团长、营长、炸弹各2；连长、排长、工兵、地雷各3
-const PIECE_CONFIG = [
-    { type: 'COMMANDER', count: 1 },
-    { type: 'GENERAL', count: 1 },
-    { type: 'FLAG', count: 1 },
-    { type: 'CAPTAIN', count: 2 },
-    { type: 'COLONEL', count: 2 },
-    { type: 'MAJOR', count: 2 },
-    { type: 'LIEUTENANT', count: 2 },
-    { type: 'BOMB', count: 2 },
-    { type: 'SERGEANT', count: 3 },
-    { type: 'CORPORAL', count: 3 },
-    { type: 'PRIVATE', count: 3 },
-    { type: 'MINE', count: 3 }
-];
-
-function buildPieceList(player) {
-    const list = [];
-    for (const cfg of PIECE_CONFIG) {
-        for (let i = 0; i < cfg.count; i++) {
-            list.push({ rank: RANKS[cfg.type], player, type: cfg.type });
-        }
-    }
-    return list;
-}
-
-// -------- 棋盘地图 (12行 x 5列) --------
-// 行0-5: 蓝方区域, 行6-11: 红方区域
-// 列0-4: 从左到右
-// 属性: camp=行营, base=大本营, railH=水平铁路, railV=垂直铁路
-
-function createMap() {
-    const map = [];
-    for (let r = 0; r < 12; r++) {
-        map[r] = [];
-        for (let c = 0; c < 5; c++) {
-            map[r][c] = { type: 'normal', railH: false, railV: false };
-        }
-    }
-
-    // ----- 行营 (每方5个) [citation:1] -----
-    // 蓝方行营: (1,1), (1,3), (4,2), (2,0), (2,4)
-    const camps = [
-        [1,1], [1,3], [4,2], [2,0], [2,4],
-        [7,1], [7,3], [10,2], [9,0], [9,4]
+    // 行0: 蓝方底线
+    BOARD_MAP[0] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'base',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: false, railV: false }
     ];
-    for (const [r,c] of camps) {
-        if (r >= 0 && r < 12 && c >= 0 && c < 5) {
-            map[r][c].type = 'camp';
-        }
-    }
 
-    // ----- 大本营 (每方2个) [citation:1] -----
-    // 蓝方: (0,2), (0,4)  红方: (11,2), (11,0)
-    const bases = [[0,2], [0,4], [11,2], [11,0]];
-    for (const [r,c] of bases) {
-        if (r >= 0 && r < 12 && c >= 0 && c < 5) {
-            map[r][c].type = 'base';
-        }
-    }
+    // 行1: 蓝方二线
+    BOARD_MAP[1] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-    // ----- 铁路线 (粗黑线) [citation:1][citation:3] -----
-    // 所有行营和大本营不设铁路
-    const isSpecial = (r,c) => {
-        for (const [sr,sc] of camps) if (sr===r && sc===c) return true;
-        for (const [sr,sc] of bases) if (sr===r && sc===c) return true;
-        return false;
-    };
+    // 行2: 蓝方三线
+    BOARD_MAP[2] = [
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'camp',   railH: false, railV: false }
+    ];
 
-    // 水平铁路: 每行除特殊格外的所有格
-    for (let r = 0; r < 12; r++) {
-        for (let c = 0; c < 5; c++) {
-            if (!isSpecial(r,c)) {
-                map[r][c].railH = true;
-                map[r][c].railV = true;
-            }
-        }
-    }
+    // 行3: 蓝方四线
+    BOARD_MAP[3] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-    // 部分格子调整: 确保铁路线符合标准棋盘
-    // 具体调整参照标准军棋棋盘[citation:10]
-    // 简化版: 所有普通格都有铁路
+    // 行4: 蓝方五线
+    BOARD_MAP[4] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-    return map;
-}
+    // 行5: 蓝方底线
+    BOARD_MAP[5] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-const MAP = createMap();
+    // 行6: 红方底线
+    BOARD_MAP[6] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-// -------- 辅助函数 --------
-function isCamp(row, col) {
-    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
-    return MAP[row][col].type === 'camp';
-}
-function isBase(row, col) {
-    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
-    return MAP[row][col].type === 'base';
-}
-function hasRailH(row, col) {
-    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
-    return MAP[row][col].railH;
-}
-function hasRailV(row, col) {
-    if (row < 0 || row >= 12 || col < 0 || col >= 5) return false;
-    return MAP[row][col].railV;
-}
-function isOnRail(row, col) {
-    return hasRailH(row, col) || hasRailV(row, col);
-}
+    // 行7: 红方二线
+    BOARD_MAP[7] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-// -------- 游戏状态 --------
-let board = [];  // 12x5 数组
-let currentPlayer = 'red';
-let selectedPos = null;
-let gameOver = false;
+    // 行8: 红方三线
+    BOARD_MAP[8] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-// DOM 引用
-const boardEl = document.getElementById('board');
-const messageEl = document.getElementById('message');
-const redStatusEl = document.getElementById('redStatus');
-const blueStatusEl = document.getElementById('blueStatus');
-const turnIndicatorEl = document.getElementById('turnIndicator');
+    // 行9: 红方四线
+    BOARD_MAP[9] = [
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'normal', railH: true,  railV: false },
+        { type: 'camp',   railH: false, railV: false }
+    ];
 
-// -------- 初始化棋盘 --------
-function initBoard() {
-    board = [];
-    for (let r = 0; r < 12; r++) {
-        board[r] = [];
-        for (let c = 0; c < 5; c++) {
-            board[r][c] = null;
-        }
-    }
+    // 行10: 红方五线
+    BOARD_MAP[10] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'camp',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-    // 蓝方区域: 行0-5, 列0-4
-    // 红方区域: 行6-11, 列0-4
-    // 按标准布局: 大本营放军旗和地雷
-    const bluePieces = buildPieceList('blue');
-    const redPieces = buildPieceList('red');
+    // 行11: 红方底线
+    BOARD_MAP[11] = [
+        { type: 'normal', railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'base',   railH: false, railV: false },
+        { type: 'normal', railH: false, railV: true  },
+        { type: 'normal', railH: false, railV: false }
+    ];
 
-    // 简单布局: 随机分配 (保证规则: 军旗在大本营, 地雷在后两排, 炸弹不在第一排)
-    // 为简化演示, 使用固定布局
-    
-    // 蓝方 (行0-5)
-    // 行0: 底线 (大本营在0,2和0,4)
-    board[0][0] = { rank: RANKS.MINE, player: 'blue', type: 'MINE' };
-    board[0][1] = { rank: RANKS.GENERAL, player: 'blue', type: 'GENERAL' };
-    board[0][2] = { rank: RANKS.FLAG, player: 'blue', type: 'FLAG' };  // 军旗
-    board[0][3] = { rank: RANKS.CAPTAIN, player: 'blue', type: 'CAPTAIN' };
-    board[0][4] = { rank: RANKS.MINE, player: 'blue', type: 'MINE' };
-    
-    board[1][0] = { rank: RANKS.MINE, player: 'blue', type: 'MINE' };
-    board[1][1] = null; // 行营
-    board[1][2] = { rank: RANKS.COMMANDER, player: 'blue', type: 'COMMANDER' };
-    board[1][3] = null; // 行营
-    board[1][4] = { rank: RANKS.COLONEL, player: 'blue', type: 'COLONEL' };
-    
-    board[2][0] = null; // 行营
-    board[2][1] = { rank: RANKS.MAJOR, player: 'blue', type: 'MAJOR' };
-    board[2][2] = { rank: RANKS.LIEUTENANT, player: 'blue', type: 'LIEUTENANT' };
-    board[2][3] = { rank: RANKS.SERGEANT, player: 'blue', type: 'SERGEANT' };
-    board[2][4] = null; // 行营
-    
-    board[3][0] = { rank: RANKS.CORPORAL, player: 'blue', type: 'CORPORAL' };
-    board[3][1] = { rank: RANKS.PRIVATE, player: 'blue', type: 'PRIVATE' };
-    board[3][2] = { rank: RANKS.BOMB, player: 'blue', type: 'BOMB' };
-    board[3][3] = { rank: RANKS.BOMB, player: 'blue', type: 'BOMB' };
-    board[3][4] = { rank: RANKS.PRIVATE, player: 'blue', type: 'PRIVATE' };
-    
-    board[4][0] = { rank: RANKS.CORPORAL, player: 'blue', type: 'CORPORAL' };
-    board[4][1] = { rank: RANKS.SERGEANT, player: 'blue', type: 'SERGEANT' };
-    board[4][2] = null; // 行营
-    board[4][3] = { rank: RANKS.LIEUTENANT, player: 'blue', type: 'LIEUTENANT' };
-    board[4][4] = { rank: RANKS.MAJOR, player: 'blue', type: 'MAJOR' };
-    
-    board[5][0] = { rank: RANKS.PRIVATE, player: 'blue', type: 'PRIVATE' };
-    board[5][1] = { rank: RANKS.CORPORAL, player: 'blue', type: 'CORPORAL' };
-    board[5][2] = { rank: RANKS.GENERAL, player: 'blue', type: 'GENERAL' };
-    board[5][3] = { rank: RANKS.COMMANDER, player: 'blue', type: 'COMMANDER' };
-    board[5][4] = { rank: RANKS.COLONEL, player: 'blue', type: 'COLONEL' };
+    // ================================================================
+    // 渲染
+    // ================================================================
 
-    // 红方 (行6-11)
-    board[6][0] = { rank: RANKS.COLONEL, player: 'red', type: 'COLONEL' };
-    board[6][1] = { rank: RANKS.COMMANDER, player: 'red', type: 'COMMANDER' };
-    board[6][2] = { rank: RANKS.GENERAL, player: 'red', type: 'GENERAL' };
-    board[6][3] = { rank: RANKS.CORPORAL, player: 'red', type: 'CORPORAL' };
-    board[6][4] = { rank: RANKS.PRIVATE, player: 'red', type: 'PRIVATE' };
-    
-    board[7][0] = { rank: RANKS.MAJOR, player: 'red', type: 'MAJOR' };
-    board[7][1] = null; // 行营
-    board[7][2] = { rank: RANKS.LIEUTENANT, player: 'red', type: 'LIEUTENANT' };
-    board[7][3] = null; // 行营
-    board[7][4] = { rank: RANKS.SERGEANT, player: 'red', type: 'SERGEANT' };
-    
-    board[8][0] = { rank: RANKS.BOMB, player: 'red', type: 'BOMB' };
-    board[8][1] = { rank: RANKS.BOMB, player: 'red', type: 'BOMB' };
-    board[8][2] = { rank: RANKS.PRIVATE, player: 'red', type: 'PRIVATE' };
-    board[8][3] = { rank: RANKS.CORPORAL, player: 'red', type: 'CORPORAL' };
-    board[8][4] = { rank: RANKS.PRIVATE, player: 'red', type: 'PRIVATE' };
-    
-    board[9][0] = null; // 行营
-    board[9][1] = { rank: RANKS.SERGEANT, player: 'red', type: 'SERGEANT' };
-    board[9][2] = { rank: RANKS.LIEUTENANT, player: 'red', type: 'LIEUTENANT' };
-    board[9][3] = { rank: RANKS.MAJOR, player: 'red', type: 'MAJOR' };
-    board[9][4] = null; // 行营
-    
-    board[10][0] = { rank: RANKS.COLONEL, player: 'red', type: 'COLONEL' };
-    board[10][1] = { rank: RANKS.MINE, player: 'red', type: 'MINE' };
-    board[10][2] = null; // 行营
-    board[10][3] = { rank: RANKS.CAPTAIN, player: 'red', type: 'CAPTAIN' };
-    board[10][4] = { rank: RANKS.GENERAL, player: 'red', type: 'GENERAL' };
-    
-    board[11][0] = { rank: RANKS.MINE, player: 'red', type: 'MINE' };
-    board[11][1] = { rank: RANKS.MINE, player: 'red', type: 'MINE' };
-    board[11][2] = { rank: RANKS.FLAG, player: 'red', type: 'FLAG' };  // 军旗
-    board[11][3] = { rank: RANKS.COMMANDER, player: 'red', type: 'COMMANDER' };
-    board[11][4] = { rank: RANKS.CAPTAIN, player: 'red', type: 'CAPTAIN' };
+    const boardEl = document.getElementById('board');
+    const cols = 'ABCDE';
 
-    currentPlayer = 'red';
-    selectedPos = null;
-    gameOver = false;
-    updateStatus();
-}
-
-// -------- 获取棋子显示名 --------
-function getPieceDisplay(piece) {
-    if (!piece) return '';
-    const rank = piece.rank;
-    const name = RANK_NAMES[rank] || '';
-    const emoji = RANK_EMOJIS[rank] || '';
-    return `${emoji}${name}`;
-}
-
-// -------- 铁路走法检测 [citation:1][citation:3] --------
-// 工兵可在铁路上任意行走并可转弯，其它棋子只能直走[citation:1][citation:6]
-function canMoveOnRail(fromR, fromC, toR, toC) {
-    const piece = board[fromR][fromC];
-    if (!piece) return false;
-    const isEngineer = piece.type === 'PRIVATE';
-
-    // 必须同在铁路上
-    if (!isOnRail(fromR, fromC) || !isOnRail(toR, toC)) return false;
-
-    // 工兵: 可在铁路上任意行走 (BFS检测连通)
-    if (isEngineer) {
-        return hasRailPath(fromR, fromC, toR, toC);
-    }
-
-    // 其它棋子: 只能直线走
-    if (fromR !== toR && fromC !== toC) return false;
-
-    if (fromR === toR) {
-        // 水平方向: 检查路径上是否有阻挡
-        const minC = Math.min(fromC, toC);
-        const maxC = Math.max(fromC, toC);
-        for (let c = minC + 1; c < maxC; c++) {
-            if (board[fromR][c] !== null) return false;
-            if (!hasRailH(fromR, c)) return false;
-        }
-        return hasRailH(fromR, fromC) && hasRailH(fromR, toC);
-    } else {
-        const minR = Math.min(fromR, toR);
-        const maxR = Math.max(fromR, toR);
-        for (let r = minR + 1; r < maxR; r++) {
-            if (board[r][fromC] !== null) return false;
-            if (!hasRailV(r, fromC)) return false;
-        }
-        return hasRailV(fromR, fromC) && hasRailV(toR, toC);
-    }
-}
-
-// -------- 工兵铁路BFS连通检测 --------
-function hasRailPath(fromR, fromC, toR, toC) {
-    const visited = new Set();
-    const queue = [[fromR, fromC]];
-    visited.add(`${fromR},${fromC}`);
-
-    while (queue.length > 0) {
-        const [r, c] = queue.shift();
-        if (r === toR && c === toC) return true;
-
-        // 四方向
-        const dirs = [[-1,0],[1,0],[0,-1],[0,1]];
-        for (const [dr, dc] of dirs) {
-            const nr = r + dr, nc = c + dc;
-            const key = `${nr},${nc}`;
-            if (nr < 0 || nr >= 12 || nc < 0 || nc >= 5) continue;
-            if (visited.has(key)) continue;
-            if (!isOnRail(nr, nc)) continue;
-            // 检查路径是否被阻挡 (中间格子不能有棋子)
-            // BFS跳过有棋子的格子 (但终点可以)
-            if (board[nr][nc] !== null && (nr !== toR || nc !== toC)) continue;
-            visited.add(key);
-            queue.push([nr, nc]);
-        }
-    }
-    return false;
-}
-
-// -------- 走法校验 --------
-function isValidMove(fromR, fromC, toR, toC) {
-    const piece = board[fromR][fromC];
-    if (!piece) return false;
-    if (fromR === toR && fromC === toC) return false;
-
-    const target = board[toR][toC];
-    if (target && target.player === piece.player) return false;
-
-    // 军旗和地雷不可移动[citation:1][citation:10]
-    if (piece.type === 'FLAG' || piece.type === 'MINE') return false;
-    // 大本营中的棋子不可移动[citation:1][citation:10]
-    if (isBase(fromR, fromC)) return false;
-
-    // 检测铁路走法
-    if (isOnRail(fromR, fromC) && isOnRail(toR, toC)) {
-        if (canMoveOnRail(fromR, fromC, toR, toC)) return true;
-    }
-
-    // 相邻走法 (公路线 或 铁路相邻)[citation:1][citation:3]
-    const dist = Math.abs(fromR - toR) + Math.abs(fromC - toC);
-    if (dist === 1) return true;
-
-    return false;
-}
-
-// -------- 吃子裁决 [citation:1][citation:6] --------
-function resolveAttack(attacker, defender) {
-    if (!defender) return { result: 'move', winner: null };
-
-    // 炸弹遇到任何棋子同归于尽[citation:1][citation:6]
-    if (attacker.rank === RANKS.BOMB) {
-        return { result: 'attack', winner: null };
-    }
-    if (defender.rank === RANKS.BOMB) {
-        return { result: 'attack', winner: null };
-    }
-
-    // 军旗被攻击即被夺取[citation:1][citation:6]
-    if (defender.type === 'FLAG') {
-        return { result: 'attack', winner: 'attacker' };
-    }
-
-    // 地雷特殊规则[citation:1][citation:10]
-    if (defender.type === 'MINE') {
-        if (attacker.type === 'PRIVATE') {
-            return { result: 'attack', winner: 'attacker' };
-        }
-        return { result: 'attack', winner: 'defender' };
-    }
-
-    // 等级比较[citation:1]
-    if (attacker.rank > defender.rank) {
-        return { result: 'attack', winner: 'attacker' };
-    } else if (attacker.rank < defender.rank) {
-        return { result: 'attack', winner: 'defender' };
-    } else {
-        return { result: 'attack', winner: null };
-    }
-}
-
-// -------- 执行走棋 --------
-function executeMove(fromR, fromC, toR, toC) {
-    if (gameOver) return false;
-
-    const piece = board[fromR][fromC];
-    const target = board[toR][toC];
-
-    if (!isValidMove(fromR, fromC, toR, toC)) {
-        messageEl.textContent = '❌ 无效走法! 请检查铁路/公路规则';
-        return false;
-    }
-
-    // 行营安全区: 不能攻击行营中的棋子[citation:1]
-    if (target && isCamp(toR, toC)) {
-        messageEl.textContent = '❌ 行营是安全区, 不能攻击里面的棋子';
-        return false;
-    }
-
-    const result = resolveAttack(piece, target);
-    let moveMsg = '';
-
-    if (result.result === 'move') {
-        board[toR][toC] = piece;
-        board[fromR][fromC] = null;
-        moveMsg = `✅ ${getPieceDisplay(piece)} 移动`;
-    } else {
-        const attackerName = getPieceDisplay(piece);
-        const defenderName = target ? getPieceDisplay(target) : '空';
-
-        if (result.winner === null) {
-            board[fromR][fromC] = null;
-            board[toR][toC] = null;
-            moveMsg = `💥 ${attackerName} 与 ${defenderName} 同归于尽!`;
-        } else if (result.winner === 'attacker') {
-            board[toR][toC] = piece;
-            board[fromR][fromC] = null;
-            moveMsg = `⚔️ ${attackerName} 消灭了 ${defenderName}!`;
-
-            if (target && target.type === 'FLAG') {
-                gameOver = true;
-                const winner = piece.player === 'red' ? '红方' : '蓝方';
-                messageEl.innerHTML = `🎉 <span class="win-${piece.player}">${winner}</span> 夺取军旗获胜! 🎉`;
-                updateStatus(); renderBoard(); return true;
-            }
-        } else {
-            board[fromR][fromC] = null;
-            moveMsg = `💀 ${attackerName} 被 ${defenderName} 消灭!`;
-        }
-    }
-
-    // 胜利条件: 消灭所有棋子[citation:1]
-    if (!gameOver) {
-        const redAlive = countAlive('red');
-        const blueAlive = countAlive('blue');
-        if (redAlive === 0) {
-            gameOver = true;
-            messageEl.innerHTML = '🎉 <span class="win-blue">蓝方</span> 全歼红方获胜! 🎉';
-        } else if (blueAlive === 0) {
-            gameOver = true;
-            messageEl.innerHTML = '🎉 <span class="win-red">红方</span> 全歼蓝方获胜! 🎉';
-        }
-    }
-
-    if (!gameOver) {
-        currentPlayer = (currentPlayer === 'red' ? 'blue' : 'red');
-        messageEl.textContent = moveMsg;
-    }
-
-    selectedPos = null;
-    updateStatus();
-    renderBoard();
-    return true;
-}
-
-function countAlive(player) {
-    let count = 0;
-    for (let r = 0; r < 12; r++) {
-        for (let c = 0; c < 5; c++) {
-            const p = board[r][c];
-            if (p && p.player === player && p.type !== 'FLAG') count++;
-        }
-    }
-    return count;
-}
-
-// -------- 更新状态 --------
-function updateStatus() {
-    const isRed = currentPlayer === 'red' && !gameOver;
-    const isBlue = currentPlayer === 'blue' && !gameOver;
-    redStatusEl.textContent = isRed ? '● 当前' : '○ 等待';
-    redStatusEl.className = isRed ? 'active' : 'inactive';
-    blueStatusEl.textContent = isBlue ? '● 当前' : '○ 等待';
-    blueStatusEl.className = isBlue ? 'active' : 'inactive';
-    turnIndicatorEl.textContent = gameOver ? '🏁 游戏结束' : `🎯 ${currentPlayer==='red'?'红方':'蓝方'}走棋`;
-}
-
-// -------- 渲染棋盘 --------
-function renderBoard() {
-    boardEl.innerHTML = '';
     for (let r = 0; r < 12; r++) {
         for (let c = 0; c < 5; c++) {
             const cell = document.createElement('div');
-            cell.className = 'cell';
-            cell.dataset.row = r;
-            cell.dataset.col = c;
+            const data = BOARD_MAP[r][c];
 
-            if (isCamp(r,c)) cell.classList.add('camp');
-            if (isBase(r,c)) cell.classList.add('base');
-            if (hasRailH(r,c) && hasRailV(r,c)) cell.classList.add('rail-hv');
-            else if (hasRailH(r,c)) cell.classList.add('rail-h');
-            else if (hasRailV(r,c)) cell.classList.add('rail-v');
+            cell.className = `cell ${data.type}`;
 
-            const piece = board[r][c];
+            // 铁路样式
+            if (data.railH && data.railV) cell.classList.add('rail-hv');
+            else if (data.railH) cell.classList.add('rail-h');
+            else if (data.railV) cell.classList.add('rail-v');
 
-            if (selectedPos && selectedPos.row === r && selectedPos.col === c) {
-                cell.classList.add('selected');
+            // 坐标
+            const coordTop = document.createElement('span');
+            coordTop.className = 'coord top';
+            coordTop.textContent = cols[c];
+            cell.appendChild(coordTop);
+
+            const coordBottom = document.createElement('span');
+            coordBottom.className = 'coord bottom';
+            coordBottom.textContent = r + 1;
+            cell.appendChild(coordBottom);
+
+            // 行营/大本营 标记
+            if (data.type === 'camp' || data.type === 'base') {
+                // 用伪元素显示图标，不需要额外元素
             }
-            if (selectedPos) {
-                if (isValidMove(selectedPos.row, selectedPos.col, r, c)) {
-                    const target = board[r][c];
-                    if (target && target.player !== board[selectedPos.row][selectedPos.col].player) {
-                        if (!isCamp(r,c)) cell.classList.add('can-attack');
-                    } else if (!target) {
-                        cell.classList.add('can-move');
-                    }
-                }
-            }
 
-            if (piece) {
-                cell.classList.add('has-piece');
-                const div = document.createElement('div');
-                div.className = `piece ${piece.player}`;
-                div.innerHTML = `
-                    <span class="emoji">${RANK_EMOJIS[piece.rank]||''}</span>
-                    <span class="rank">${piece.rank>=0?piece.rank:''}</span>
-                    <span class="name">${RANK_NAMES[piece.rank]||''}</span>
-                `;
-                cell.appendChild(div);
-                cell.addEventListener('click', () => onCellClick(r,c));
-            } else {
-                cell.addEventListener('click', () => onCellClick(r,c));
-            }
             boardEl.appendChild(cell);
         }
     }
-}
-
-// -------- 点击处理 --------
-function onCellClick(row, col) {
-    if (gameOver) return;
-    const piece = board[row][col];
-
-    if (selectedPos) {
-        const fr = selectedPos.row, fc = selectedPos.col;
-        const fp = board[fr][fc];
-
-        if (row === fr && col === fc) {
-            selectedPos = null; renderBoard(); return;
-        }
-        if (piece && piece.player === currentPlayer) {
-            selectedPos = { row, col }; renderBoard(); return;
-        }
-        if (fp && fp.player === currentPlayer) {
-            const success = executeMove(fr, fc, row, col);
-            if (!success) { selectedPos = null; renderBoard(); }
-            return;
-        }
-        selectedPos = null; renderBoard(); return;
-    }
-
-    if (piece && piece.player === currentPlayer) {
-        if (piece.type === 'FLAG' || piece.type === 'MINE') {
-            messageEl.textContent = `❌ ${getPieceDisplay(piece)} 不能移动`;
-            return;
-        }
-        if (isBase(row, col)) {
-            messageEl.textContent = '❌ 大本营中的棋子不能移动';
-            return;
-        }
-        selectedPos = { row, col };
-        renderBoard();
-        messageEl.textContent = `选中 ${getPieceDisplay(piece)}，点击目标`;
-    } else {
-        messageEl.textContent = `请选择 ${currentPlayer==='red'?'红方':'蓝方'} 的棋子`;
-    }
-}
-
-// -------- 重置 --------
-function resetGame() {
-    initBoard();
-    renderBoard();
-    messageEl.textContent = '🔄 新游戏开始! 红方先走';
-    selectedPos = null;
-    gameOver = false;
-    updateStatus();
-}
-
-// -------- 启动 --------
-initBoard();
-renderBoard();
-messageEl.textContent = '🎮 游戏开始! 红方先走';
-updateStatus();
-window.resetGame = resetGame;
 </script>
+
 </body>
 </html>
